@@ -6,26 +6,48 @@ AIOps Platform 的官方网站项目——双层定位：**产品层**（转化�
 
 ## 当前状态
 
-**P0 完成**：15 站竞品调研 → 15 屏设计稿 → 可交互原型 → Agent 社区内容资产 → VIP 定时任务权益页。
+**P0~P4 已交付**（2026-10-29）：15 站竞品调研 → 15 屏设计稿 → **39 个可发布产物**（18 主页面 + 21 正文壳页）→ Agent 社区 8 技能 → VIP 定时任务权益页 → 文档中心站内渲染。
+
+| 验证 | 结果 |
+|---|---|
+| 需求项 | **FR 32 / 32** 达成（`docs/engineering/05-交付核对表.md` 逐条核对） |
+| 机械守卫 | **17 / 17** 全绿（`python3 tools/check_all.py`） |
+| 响应式 | 19 页 × 4 档（1440/1024/768/390）**零横向溢出** |
+| 可访问性 | 双主题 12 组对比度全部 ≥4.5:1 |
+| 性能 | 单页最大 90KB（限 150KB），零 CDN / 零第三方脚本 |
 
 打开预览：
 
 ```bash
+# 方式一：静态服务（最快）
 cd site && python3 -m http.server 8899
-# → http://127.0.0.1:8899（深色默认，右上角切浅色）
+
+# 方式二：FastAPI 站点服务（与生产同形态，含 /api/health 探活）
+pip install -r requirements-website.txt
+python3 server.py            # → http://127.0.0.1:8899
 ```
+
+## 开发流程
+
+```bash
+python3 tools/build_pages.py         # 改 site/src/ 后重建全部产物
+python3 tools/build_pages.py --check # 校验产物与源一致（CI gate）
+python3 tools/check_all.py           # 17 项机械守卫
 
 ## 目录
 
 | 路径 | 内容 |
 |---|---|
 | [PLAN.md](PLAN.md) | **开发计划**（P1-P6 里程碑 · 验收标准 · 风险红线） |
-| `site/index.html` | 首页原型（单文件 · 零 CDN · 零构建 · 深浅双主题） |
+| `server.py` | FastAPI 站点服务（静态托管 + `/api/health` + 404 兜底） |
+| `tools/` | `build_pages.py`（生成器）· `check_all.py`（守卫）· `og_template.html`（OG 图模板） |
+| `site/` | 产物：18 主页面 + 21 正文壳页 + `assets/`；`site/src/` 是源 |
 | `docs/官网设计稿.md` | 设计稿 v1.3：逐屏设计 + 视觉系统 + 数字来源表 + 禁用词表 |
 | `docs/开源产品官网设计研究.md` | 15 个开源产品官网调研（六范式 + 信任层级 + 12 个可复用装置） |
 | `docs/TestHub-官网设计文档.md` | TestHub 拆解（Skills 目录 / 版本对比 / VIP 模型） |
 | `agent-community/` | 8 个种子 SKILL.md（已过只读命令白名单自查）+ 贡献指南 |
 | `assets/screenshots/` | 15 张设计过程截图（深浅主题） |
+| `docs/engineering/` | 工程文档四件套 + **05-交付核对表**（FR 32/32 逐条核对 + 缺陷台账） |
 
 ## 设计原则（红线）
 
