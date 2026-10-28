@@ -38,6 +38,9 @@
 /agent-community/ Agent 社区 · 技能集市（三轨 + 贡献三步 + 效果榜）
 /oss-hub/         开源专区（上游与互补，收录规则公开）
 /vip/             VIP 权益（定时任务 · License 模块位 pro · 即将上线）
+/pricing/         版本对比与商业授权（对比表全量 + License 说明）
+/open-source/     开源说明（双仓机制 / 发布纪律 / 贡献指南 / 安全通告）
+/changelog/       更新公告（版本条目：日期/级别/标题/摘要）
 /docs/            文档中心（快速开始 + API 参考 + 教程入口）
 /about/           关于（路线图/发版记录/贡献指南/安全通告）
 404.html          兜底页
