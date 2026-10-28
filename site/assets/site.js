@@ -44,3 +44,12 @@
       });
     });
   })();
+// FR-P4-7 补：页脚进入视口时淡出联系挂件，避免遮挡页脚链接（WEB-12）
+(function () {
+  var w = document.querySelector(".wx-contact");
+  var f = document.querySelector("footer");
+  if (!w || !f || !("IntersectionObserver" in window)) return;
+  new IntersectionObserver(function (es) {
+    w.classList.toggle("wx-contact--away", es[0].isIntersecting);
+  }, { rootMargin: "0px 0px -40px 0px" }).observe(f);
+})();

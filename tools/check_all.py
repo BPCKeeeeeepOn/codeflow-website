@@ -104,7 +104,7 @@ def g08() -> None:
     bad = []
     for p in html_pages():
         s = p.read_text(encoding="utf-8")
-        for tag in ("div", "section", "table", "ul", "ol", "details", "main", "header", "footer", "nav"):
+        for tag in ("div", "section", "table", "ul", "ol", "details", "main", "header", "footer", "nav", "a"):
             o = len(re.findall(rf"<{tag}[\s>]", s)); c = len(re.findall(rf"</{tag}>", s))
             if o != c:
                 bad.append(f"{p.name} <{tag}> {o}/{c}")
@@ -275,8 +275,26 @@ def g19() -> None:
     g("G19", not bad, "; ".join(bad[:3]))
 
 
+# ── G20 锚点健康（WEB-11 根因锁）：坏锚点 / 空链接 / 裸 # 死链 ──
+def g20() -> None:
+    bad = []
+    for p in html_pages():
+        s = p.read_text(encoding="utf-8")
+        # 坏锚点：<a 标签体内在 > 之前出现 < （如 <a href="x"</a> 缺右尖括号）
+        for m in re.finditer(r"<a\s[^<>]*<", s):
+            bad.append(f"{p.name} 坏锚点 …{m.group(0)[:44]}")
+        # 空链接：<a …></a> 无任何内容（无文字也无子元素）
+        for m in re.finditer(r"<a[^>]*>\s*</a>", s):
+            bad.append(f"{p.name} 空链接 {m.group(0)[:44]}")
+        # 裸 # 死链：站内导航不允许占位
+        n = s.count('href="#"')
+        if n:
+            bad.append(f"{p.name} 裸#死链×{n}")
+    g("G20", not bad, "; ".join(bad[:3]))
+
+
 def main() -> int:
-    for fn in (g01, g03, g04, g05, g06, g07, g08, g09, g10, g11, g12, g13, g14, g15, g16, g17, g18, g19):
+    for fn in (g01, g03, g04, g05, g06, g07, g08, g09, g10, g11, g12, g13, g14, g15, g16, g17, g18, g19, g20):
         try:
             fn()
         except Exception as e:  # noqa: BLE001
