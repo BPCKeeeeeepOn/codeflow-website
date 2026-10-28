@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>OG</title>
+<style>
+/* OG 模板：双专色套印（risograph）风格 —— 禁渐变 / 禁发光 / 禁玻璃拟态 / 禁假数据。
+   两块专色硬边叠加 + 刻意错位 = 印刷错版感；字全部 HTML 排版，不烧进图。 */
+:root{
+  --paper:#F2EFE7;
+  --navy:#16264A;
+  --elec:#2E7DF6;
+  --ink:#16264A;
+}
+*{box-sizing:border-box;margin:0}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{
+  background:var(--paper);
+  font-family:-apple-system,"SF Pro Text","PingFang SC",system-ui,sans-serif;
+  color:var(--ink);
+  position:relative;
+}
+/* 版面：左侧文字区，右侧视觉区（秩序→断裂→弥散） */
+.wrap{position:relative;z-index:3;height:100%;padding:64px 72px;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:auto}
+.mark{width:40px;height:40px;border-radius:10px;background:var(--navy);display:grid;place-items:center}
+.mark svg{width:22px;height:22px}
+.bname{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.bname span{color:#5A6478;font-weight:500}
+h1{font-size:60px;line-height:1.18;font-weight:700;letter-spacing:-.025em;max-width:17em;margin:0 0 26px}
+h1 em{font-style:normal;color:var(--elec)}
+.kicker{display:inline-block;font-size:19px;font-weight:600;color:var(--paper);
+  background:var(--navy);padding:7px 16px;border-radius:4px;letter-spacing:.01em}
+.foot{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-top:auto}
+.stats{display:flex;gap:38px}
+.stat b{display:block;font-size:38px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.stat b small{font-size:17px;font-weight:600;color:var(--elec);margin-left:3px}
+.stat span{display:block;font-size:16px;color:#5A6478;margin-top:5px}
+.tag{font-size:16px;color:#5A6478;text-align:left;line-height:1.55;max-width:20em;margin-top:22px}
+/* ── 视觉区：秩序（密纹）→ 断裂（竖线）→ 弥散（短划）── */
+.art{position:absolute;inset:0;z-index:1;pointer-events:none}
+.plate{position:absolute;right:-40px;top:-30px;width:760px;height:700px}
+.paper{position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg, rgba(22,38,74,.13) 0 2px, transparent 2px 7px),
+  repeating-linear-gradient(90deg, rgba(22,38,74,.13) 0 2px, transparent 2px 7px);
+  -webkit-mask-image:linear-gradient(90deg,#000 0 46%, transparent 72%);
+          mask-image:linear-gradient(90deg,#000 0 46%, transparent 72%)}
+.fracture{position:absolute;right:472px;top:34px;width:7px;height:470px;background:var(--elec)}
+.dot{position:absolute;right:459px;top:252px;width:33px;height:33px;border-radius:50%;background:var(--elec)}
+.dissolve{position:absolute;right:-40px;top:40px;width:300px;height:520px;
+  background:repeating-linear-gradient(90deg, rgba(46,125,246,.8) 0 3px, transparent 3px 27px);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0 26%,#000 55%,transparent 92%);
+          mask-image:linear-gradient(180deg,transparent 0 26%,#000 55%,transparent 92%)}
+.grain{position:absolute;inset:0;opacity:.5;
+  background-image:radial-gradient(rgba(22,38,74,.16) .6px, transparent .7px);
+  background-size:5px 5px}
+</style>
+</head>
+<body>
+<div class="art">
+  <div class="plate">
+    <div class="paper"></div>
+    <div class="dissolve"></div>
+  </div>
+  <div class="fracture"></div>
+  <div class="dot"></div>
+  <div class="grain"></div>
+</div>
+<div class="wrap">
+  <div class="brand">
+    <span class="mark">
+      <svg viewBox="0 0 32 32" fill="none" stroke="#F2EFE7" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 17h5l3-7 4 13 3-9 2 3h6"/><circle cx="25" cy="17" r="2.6" fill="#2E7DF6" stroke="none"/>
+      </svg>
+    </span>
+    <span class="bname">AIOps <span>AI 运维监控平台</span></span>
+  </div>
+  <h1>告警响了，AI 已经查完，<br><em>证据链</em>摆在你面前。</h1>
+  <span class="kicker">带证据链的根因诊断 · 九道护栏下的分级处置</span>
+  <div class="foot">
+    <div class="stats">
+      <div class="stat"><b>82<small>秒</small></b><span>出带证据链的根因报告</span></div>
+      <div class="stat"><b>10<small>分钟</small></b><span>告警 → 恢复全流程</span></div>
+      <div class="stat"><b>0<small>个</small></b><span>被监控机入站端口</span></div>
+    </div>
+  </div>
+  <div class="tag">AGPL-3.0 开源 · 可私有化部署 · 被监控机零入站端口</div>
+</div>
+</body>
+</html>
