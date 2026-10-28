@@ -10,8 +10,8 @@ AIOps Platform 的官方网站项目——双层定位：**产品层**（转化�
 
 | 验证 | 结果 |
 |---|---|
-| 需求项 | **FR 32 / 32** 达成（`docs/engineering/05-交付核对表.md` 逐条核对） |
-| 机械守卫 | **17 / 17** 全绿（`python3 tools/check_all.py`） |
+| 需求项 | **FR 33 / 33** 达成（`docs/engineering/05-交付核对表.md` 逐条核对） |
+| 机械守卫 | **18 / 18** 全绿（`python3 tools/check_all.py`） |
 | 响应式 | 19 页 × 4 档（1440/1024/768/390）**零横向溢出** |
 | 可访问性 | 双主题 12 组对比度全部 ≥4.5:1 |
 | 性能 | 单页最大 90KB（限 150KB），零 CDN / 零第三方脚本 |
@@ -47,7 +47,7 @@ python3 tools/check_all.py           # 17 项机械守卫
 | `docs/TestHub-官网设计文档.md` | TestHub 拆解（Skills 目录 / 版本对比 / VIP 模型） |
 | `agent-community/` | 8 个种子 SKILL.md（已过只读命令白名单自查）+ 贡献指南 |
 | `assets/screenshots/` | 15 张设计过程截图（深浅主题） |
-| `docs/engineering/` | 工程文档四件套 + **05-交付核对表**（FR 32/32 逐条核对 + 缺陷台账） |
+| `docs/engineering/` | 工程文档四件套 + **05-交付核对表**（FR 33/33 逐条核对 + 缺陷台账） |
 
 ## 设计原则（红线）
 

@@ -34,6 +34,9 @@
   --overlay-2:rgba(0,0,0,.45);
   --on-fill:#fff;
   --skip:var(--muted);
+  /* 可读性两支（P4 对比度实测：主按钮 3.88:1 / 浅色小节标 3.47:1 不达标）：
+     品牌主色 --accent --2383e2 保持不变，小字与按钮填充另立更深一档 */
+  --accent-ink:#2383e2; --btn-fill:#1e6fcc; --btn-fill-hover:#1a5fb0;
 }
 [data-theme="light"] {
   color-scheme: light;
@@ -67,6 +70,8 @@
   --overlay-2:rgba(16,24,40,.16);
   --on-fill:#fff;
   --skip:var(--muted);
+  /* 浅色下文字强调蓝下沉到 #1b6fc9 → 小字 4.50:1；按钮填充两主题统一 → 白字 5.00:1 */
+  --accent-ink:#1b6fc9; --btn-fill:#1e6fcc; --btn-fill-hover:#1a5fb0;
 }
 :root{
   --radius-sm:6px; --radius:8px; --radius-lg:12px;
@@ -561,12 +566,25 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
 .table-scroll table{margin:0;width:max-content;min-width:100%}
 .doc-body table{display:table;width:100%}
 
-/* ── 可读性调优（P4 对比度实测：主按钮 3.88:1 / 浅色小节标 3.47:1 不达标）──
-   产品主色 #2383e2 保持不变（品牌一致），另立"文字用强调蓝"与"按钮填充蓝"两支：
-   · --accent-ink：小字（kicker/链接）用的蓝，浅色下沉到 #1b6fc9 → 4.50:1
-   · --btn-fill：主按钮填充，深浅统一 #1e6fcc → 白字 5.00:1 */
-:root{ --accent-ink:#2383e2; --btn-fill:#1e6fcc; --btn-fill-hover:#1a5fb0; }
-[data-theme="light"]{ --accent-ink:#1b6fc9; }
+/* ── 可读性组件覆盖（令牌在主题块内，此处仅改用，压过上方同权规则）── */
 .sec-kicker{color:var(--accent-ink)}
 .btn-primary{background:var(--btn-fill)}
 .btn-primary:hover{background:var(--btn-fill-hover)}
+
+/* ── 右下角常驻联系挂件（FR-33）── */
+.wx-contact{
+  position:fixed;right:18px;bottom:18px;z-index:50;
+  width:176px;padding:14px;text-align:center;
+  background:var(--surface);backdrop-filter:blur(18px);
+  border:1px solid var(--border-strong);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-pop);
+}
+.wx-contact-label{font-size:.8rem;color:var(--text);line-height:1.5;margin-bottom:10px}
+.wx-contact-label code{font-family:var(--font-mono);font-size:.78rem;font-weight:650;color:var(--accent-ink)}
+.wx-contact img{display:block;width:132px;height:132px;margin:0 auto;
+  border-radius:var(--radius-sm);background:#fff;padding:5px;border:1px solid var(--border)}
+@media (max-width:640px){
+  .wx-contact{right:10px;bottom:10px;width:140px;padding:10px}
+  .wx-contact img{width:106px;height:106px}
+  .wx-contact-label{font-size:.74rem;margin-bottom:8px}
+}

@@ -256,8 +256,27 @@ def g18() -> None:
     g("G18", ok_v and ok_c, f"版本={ok_v} 命令={ok_c}")
 
 
+# ── G19 联系挂件（FR-33）：全页存在 + 二维码资产合规 ──
+def g19() -> None:
+    bad = []
+    qr = SITE / "assets" / "wechat-qr.jpg"
+    if not qr.exists():
+        bad.append("wechat-qr.jpg 缺失")
+    elif qr.stat().st_size > 80 * 1024:
+        bad.append(f"二维码 {qr.stat().st_size/1024:.0f}KB 超 80KB")
+    for p in html_pages():
+        s = p.read_text(encoding="utf-8")
+        if 'class="wx-contact"' not in s:
+            bad.append(f"{p.name} 缺联系挂件")
+        elif "cloud288" not in s:
+            bad.append(f"{p.name} 缺微信号文案")
+        elif "/assets/wechat-qr.jpg" not in s:
+            bad.append(f"{p.name} 缺二维码引用")
+    g("G19", not bad, "; ".join(bad[:3]))
+
+
 def main() -> int:
-    for fn in (g01, g03, g04, g05, g06, g07, g08, g09, g10, g11, g12, g13, g14, g15, g16, g17, g18):
+    for fn in (g01, g03, g04, g05, g06, g07, g08, g09, g10, g11, g12, g13, g14, g15, g16, g17, g18, g19):
         try:
             fn()
         except Exception as e:  # noqa: BLE001
