@@ -1,0 +1,68 @@
+<div class="wrap">
+<section class="hero" style="padding:64px 0 40px">
+  <span class="eyebrow">Agent 社区 · 技能集市</span>
+  <h1 style="font-size:clamp(1.8rem,3.4vw,2.7rem)">把一线运维的排查经验，<br>变成人人可导入的技能。</h1>
+  <p class="lede">每个技能是一份 SKILL.md：写清适用场景、只读取证步骤与边界。在平台里粘贴 GitHub 链接即可导入——不需要写代码，但需要<strong>真的排查过</strong>。</p>
+</section>
+
+<div class="com-tabs" role="tablist" aria-label="技能轨道">
+  <button class="com-tab active" data-track="community" role="tab" aria-selected="true">社区技能 <em>8</em></button>
+  <button class="com-tab" data-track="official" role="tab" aria-selected="false">官方技能 <em>8</em></button>
+  <button class="com-tab" data-track="recipes" role="tab" aria-selected="false">集成配方 <em>征集</em></button>
+</div>
+
+<div class="com-track" id="track-community">
+  {{SKILL_CARDS}}
+</div>
+
+<div class="com-track" id="track-official" hidden>
+  <div class="official-rows">
+    <div class="official-row"><div class="o-h"><b>core-investigation</b><span class="verified">官方 · 核心方法论</span></div><p>通用故障调查方法论：假设驱动、证伪优先、症状不是根因。</p><div class="o-scope">随每次诊断常驻注入</div></div>
+    <div class="official-row"><div class="o-h"><b>core-safety</b><span class="verified">官方 · 核心方法论</span></div><p>只读优先与变更纪律：没验证过的修复不建议，危险命令一律不执行。</p><div class="o-scope">随每次诊断常驻注入</div></div>
+    <div class="official-row"><div class="o-h"><b>core-reporting</b><span class="verified">官方 · 核心方法论</span></div><p>报告写作规范：结论在前、证据在后、诚实标注不确定性与未检查项。</p><div class="o-scope">随每次诊断常驻注入</div></div>
+    <div class="official-row"><div class="o-h"><b>disk-troubleshoot</b><span class="verified">官方</span></div><p>磁盘问题专项：水位、inode、IO 三条线分开查。</p><div class="o-scope">触发：disk.*, 磁盘, inode</div></div>
+    <div class="official-row"><div class="o-h"><b>host-health-diagnose</b><span class="verified">官方</span></div><p>主机健康综合排查：CPU / 内存 / 负载联动判断。</p><div class="o-scope">触发：cpu.*, mem.*, load.*</div></div>
+    <div class="official-row"><div class="o-h"><b>metric-analysis</b><span class="verified">官方</span></div><p>指标分析方法论：窗口、基线与异常点的关系。</p><div class="o-scope">触发：metric, 指标, cpu.*, mem.*</div></div>
+    <div class="official-row"><div class="o-h"><b>log-search</b><span class="verified">官方</span></div><p>日志检索路径：时间窗优先于行数，关键词定位如实标注。</p><div class="o-scope">触发：日志, journal, error, oom</div></div>
+    <div class="official-row"><div class="o-h"><b>case-recall</b><span class="verified">官方</span></div><p>案例检索：相似故障先查历史，复用已验证的处置。</p><div class="o-scope">触发：案例, 复盘, 历史</div></div>
+  </div>
+</div>
+
+<div class="com-track" id="track-recipes" hidden>
+  <div class="official-rows">
+    <div class="official-row"><div class="o-h"><b>postgres_exporter 白名单</b><span class="community-tag">配方 · 征集中</span></div><p>476 个指标里挑哪 20 个进平台？一份开箱可用的 metric_keep 正则清单。</p><div class="o-scope">数据源配置 · metric_keep</div></div>
+    <div class="official-row"><div class="o-h"><b>MCP 客户端接入</b><span class="community-tag">配方 · 征集中</span></div><p>把平台只读工具接进你自己的 Agent：开启 /mcp、鉴权与工具清单。</p><div class="o-scope">POST /mcp · 默认关闭</div></div>
+    <div class="official-row"><div class="o-h"><b>通知渠道 recipes</b><span class="community-tag">配方 · 征集中</span></div><p>飞书加签 / 钉钉机器人 / 通用 Webhook 的 apprise URL 模板与避坑参数。</p><div class="o-scope">apprise 透传 · 危险 scheme 已拦</div></div>
+    <div class="official-row"><div class="o-h"><b>你的配方</b><span class="community-tag">虚位以待</span></div><p>把你调通过的 exporter / 渠道 / Agent 集成写成配方，分享给所有人。</p><div class="o-scope">提 Issue 提案</div></div>
+  </div>
+</div>
+
+<div class="contrib">
+  <div class="contrib-steps">
+    <h3>贡献一个技能，只要三步</h3>
+    <div class="cstep"><span class="n">1</span><div class="t"><b>提案</b><p>开一个 Issue：讲清这个场景为什么值得一个技能——适用范围 + 一个你真实排查过的故障故事。</p></div></div>
+    <div class="cstep"><span class="n">2</span><div class="t"><b>起草</b><p>按 SKILL.md 模板写：frontmatter（适用告警范围 + 只读命令）+ 何时用 / 动作 / 边界三段。命令必须全部只读。</p></div></div>
+    <div class="cstep"><span class="n">3</span><div class="t"><b>验证合并</b><p>附一个可复现的触发场景（平台自带的 5 种故障注入脚本即可），维护者真机跑通后合并进月度收录。</p></div></div>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:14px">合并 30 天后开始累计真实效果数据：加载次数、跟进率、Token 中位数——你的技能有没有用，数字说话。</p>
+  </div>
+  <div class="contrib-wall">
+    <div>
+      <div class="cw-h">贡献者墙 · 虚位以待</div>
+      <p class="cw-d">还没有社区贡献者。<br><b>第一个把自己的排查经验写成技能的人，写在这里。</b></p>
+    </div>
+  </div>
+</div>
+
+<div class="leaderboard">
+  <span class="lb-cup"><svg width="19" height="19" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3.5 1.5a1 1 0 0 0-1 1V4a4.5 4.5 0 0 0 3.6 4.41 2.5 2.5 0 0 0 1.4 1.4v1.69H5.75a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5H8.5V9.81a2.5 2.5 0 0 0 1.4-1.4A4.5 4.5 0 0 0 13.5 4V2.5a1 1 0 0 0-1-1h-9ZM4 4V3h8v1a3 3 0 0 1-1.9 2.79A2.5 2.5 0 0 0 8 5.5c-.66 0-1.26.26-1.7.68A3 3 0 0 1 4 4Zm4 .5a1 1 0 0 1 1 1 3 3 0 0 1-.55 1.73A1 1 0 0 1 8 9.5a1 1 0 0 1-.45-.27A3 3 0 0 1 7 5.5a1 1 0 0 1 1-1Z"/></svg></span>
+  <div>
+    <div class="lb-t">月度效果榜 · 每月随《AI 运维月报》发布</div>
+    <div class="lb-d">按真实加载次数 × 跟进率排社区技能 Top 5。<b style="color:var(--text)">本期样本不足，暂不排名</b>——数字够的时候自然会出现在这里，不够的时候我们直说。</div>
+  </div>
+</div>
+
+<div class="safety-bar">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--pass)" stroke-width="1.6" aria-hidden="true"><path d="M8 1.5 13.5 4v4c0 3.2-2.3 5.6-5.5 6.5C4.8 13.6 2.5 11.2 2.5 8V4L8 1.5Z"/><path d="M5.8 8 7.4 9.6 10.4 6.6"/></svg>
+  <p><b>安全前置，不是事后补救。</b>所有社区技能的命令都会经过平台只读白名单与九道护栏校验，禁用清单硬边界不可越过；技能授权的命令仅在本次诊断会话内生效，会话结束即失效。</p>
+</div>
+</div>
