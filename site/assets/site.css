@@ -560,3 +560,13 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
 .table-scroll{max-width:100%;overflow-x:auto;margin:0 0 18px;border:1px solid var(--border-soft);border-radius:var(--radius-sm)}
 .table-scroll table{margin:0;width:max-content;min-width:100%}
 .doc-body table{display:table;width:100%}
+
+/* ── 可读性调优（P4 对比度实测：主按钮 3.88:1 / 浅色小节标 3.47:1 不达标）──
+   产品主色 #2383e2 保持不变（品牌一致），另立"文字用强调蓝"与"按钮填充蓝"两支：
+   · --accent-ink：小字（kicker/链接）用的蓝，浅色下沉到 #1b6fc9 → 4.50:1
+   · --btn-fill：主按钮填充，深浅统一 #1e6fcc → 白字 5.00:1 */
+:root{ --accent-ink:#2383e2; --btn-fill:#1e6fcc; --btn-fill-hover:#1a5fb0; }
+[data-theme="light"]{ --accent-ink:#1b6fc9; }
+.sec-kicker{color:var(--accent-ink)}
+.btn-primary{background:var(--btn-fill)}
+.btn-primary:hover{background:var(--btn-fill-hover)}
