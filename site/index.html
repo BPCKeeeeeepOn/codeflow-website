@@ -1,511 +1,29 @@
 <!doctype html>
 <html lang="zh-CN" data-theme="dark">
+<!-- 由 tools/build_pages.py 生成，禁止手改：改 site/src/ 后重建 -->
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AIOps · AI 运维监控平台 — 告警响了，AI 已经查完，证据链摆在你面前</title>
-<meta name="description" content="开源自托管的 AI 运维监控平台：拉取式 Agent 接管主机与服务监控（被监控机零入站端口），告警收敛成事件后交给带证据链的诊断 Agent 自主排查取证；处置只在白名单内、经九道护栏准入后执行——AI 负责把事实查清楚，拍板权在人。">
-<meta property="og:title" content="AIOps · AI 运维监控平台">
-<meta property="og:description" content="告警响了，AI 已经查完，证据链摆在你面前。">
-<meta property="og:type" content="website">
+<meta name="description" content="开源自托管的 AI 运维监控平台：拉取式 Agent 零入站端口，告警收敛成事件后交给带证据链的诊断 Agent 排查取证；处置白名单+九道护栏，AI 查清事实，拍板在人。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e0f11'/%3E%3Cpath d='M5 17h5l3-7 4 13 3-9 2 3h5' stroke='%23f5f5f7' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='25' cy='17' r='2.4' fill='%232383e2'/%3E%3C/svg%3E">
-
-<style>
-/* ═══════════════════════════════════════════════════════════
-   设计令牌 — 直接沿用平台 static/ops.css 的 D50 收敛后口径
-   （语义色 4 色相 + 中性灰；透明度只引用 rgb 三元组；每主题各一档）
-   ═══════════════════════════════════════════════════════════ */
-:root, [data-theme="dark"] {
-  color-scheme: dark;
-  --bg:#0e0f11;
-  --bg-glow:radial-gradient(1100px 700px at 88% -12%, rgba(var(--accent-rgb),.12), transparent 58%),
-            radial-gradient(900px 600px at 4% 112%, rgba(var(--accent-rgb),.05), transparent 55%);
-  --surface:rgba(28,29,32,.72);
-  --surface2:#1e1f23;
-  --border:rgba(255,255,255,.08);
-  --border-strong:rgba(255,255,255,.16);
-  --border-soft:rgba(255,255,255,.07);
-  --text:#f5f5f7;
-  --muted:#9a9aa2;
-  --accent:#2383e2; --accent-rgb:35,131,226; --accent-hover:#1e6fcc;
-  --pass:#3FB950; --pass-rgb:63,185,80;
-  --fail:#F85149; --fail-rgb:248,81,73;
-  --warn:#60A5FA; --warn-rgb:96,165,250;
-  --accent-weak:rgba(var(--accent-rgb),.08);
-  --accent-soft:rgba(var(--accent-rgb),.16);
-  --accent-ring:rgba(var(--accent-rgb),.35);
-  --pass-weak:rgba(var(--pass-rgb),.20);
-  --fail-weak:rgba(var(--fail-rgb),.20);
-  --warn-weak:rgba(var(--warn-rgb),.20);
-  --chrome-bg:rgba(20,22,26,.95);
-  --nav-hover:rgba(255,255,255,.05);
-  --nav-active:rgba(var(--accent-rgb),.18);
-  --row-hover:rgba(255,255,255,.03);
-  --shadow-card:0 1px 2px rgba(0,0,0,.35);
-  --shadow-card-hover:0 4px 14px rgba(0,0,0,.45);
-  --shadow-pop:0 12px 32px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.35);
-  --overlay-2:rgba(0,0,0,.45);
-  --on-fill:#fff;
-  --skip:var(--muted);
-}
-[data-theme="light"] {
-  color-scheme: light;
-  --bg:#f2f2f7;
-  --bg-glow:radial-gradient(1100px 700px at 88% -12%, rgba(var(--accent-rgb),.09), transparent 58%),
-            radial-gradient(900px 600px at 4% 112%, rgba(var(--accent-rgb),.05), transparent 55%);
-  --surface:#fff;
-  --surface2:#f3f6fa;
-  --border:rgba(0,0,0,.06);
-  --border-strong:rgba(0,0,0,.16);
-  --border-soft:rgba(0,0,0,.045);
-  --text:#1d1d1f;
-  --muted:#6e6e73;
-  --accent:#2383e2; --accent-rgb:35,131,226; --accent-hover:#1b6fc9;
-  --pass:#0F7B0F; --pass-rgb:15,123,15;
-  --fail:#E03E3E; --fail-rgb:224,62,62;
-  --warn:#1E40AF; --warn-rgb:30,64,175;
-  --accent-weak:rgba(var(--accent-rgb),.08);
-  --accent-soft:rgba(var(--accent-rgb),.16);
-  --accent-ring:rgba(var(--accent-rgb),.35);
-  --pass-weak:rgba(var(--pass-rgb),.20);
-  --fail-weak:rgba(var(--fail-rgb),.20);
-  --warn-weak:rgba(var(--warn-rgb),.20);
-  --chrome-bg:rgba(255,255,255,.96);
-  --nav-hover:rgba(0,0,0,.04);
-  --nav-active:rgba(35,131,226,.18);
-  --row-hover:rgba(0,0,0,.02);
-  --shadow-card:0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.025);
-  --shadow-card-hover:0 4px 14px rgba(16,24,40,.08);
-  --shadow-pop:0 12px 32px rgba(16,24,40,.13), 0 2px 8px rgba(16,24,40,.06);
-  --overlay-2:rgba(16,24,40,.16);
-  --on-fill:#fff;
-  --skip:var(--muted);
-}
-:root{
-  --radius-sm:6px; --radius:8px; --radius-lg:12px;
-  --ease:cubic-bezier(.2,.7,.3,1);
-  --focus-ring:0 0 0 3px var(--accent-soft);
-  --font:-apple-system,"SF Pro Text","PingFang SC",system-ui,sans-serif;
-  --font-mono:"SF Mono",ui-monospace,Menlo,monospace;
-  --maxw:1180px;
-}
-
-/* ── 基础 ── */
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;background:var(--bg);color:var(--text);
-  font-family:var(--font);font-size:16px;line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  background-image:var(--bg-glow);background-repeat:no-repeat;
-}
-a{color:inherit;text-decoration:none}
-h1,h2,h3,h4{margin:0;line-height:1.25;letter-spacing:-.01em;font-weight:650}
-p{margin:0}
-code{font-family:var(--font-mono);font-size:.88em}
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
-:focus-visible{outline:none;box-shadow:var(--focus-ring);border-radius:var(--radius-sm)}
-
-/* ── 顶栏 ── */
-header.nav{
-  position:sticky;top:0;z-index:60;
-  background:var(--chrome-bg);backdrop-filter:blur(18px);
-  border-bottom:1px solid var(--border);
-}
-.nav-in{display:flex;align-items:center;gap:28px;height:60px}
-.brand{display:flex;align-items:center;gap:9px;font-weight:650;letter-spacing:-.01em}
-.brand-mark{width:26px;height:26px;border-radius:7px;background:var(--surface2);border:1px solid var(--border-strong);
-  display:grid;place-items:center;flex:none}
-.brand-name{font-size:1.02rem}
-.brand-name b{font-weight:700}
-.brand-name span{color:var(--muted);font-weight:500}
-.nav-links{display:flex;gap:4px;margin-left:6px}
-.nav-links a{padding:7px 11px;border-radius:var(--radius-sm);font-size:.9rem;color:var(--muted);
-  transition:background .15s var(--ease),color .15s var(--ease)}
-.nav-links a:hover{background:var(--nav-hover);color:var(--text)}
-.nav-spacer{flex:1}
-.nav-act{display:flex;align-items:center;gap:10px}
-.icon-btn{width:32px;height:32px;border-radius:var(--radius-sm);border:1px solid var(--border);
-  background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center;
-  transition:background .15s var(--ease),color .15s var(--ease)}
-.icon-btn:hover{background:var(--nav-hover);color:var(--text)}
-.gh-star{display:flex;align-items:center;gap:7px;padding:6px 11px;border-radius:var(--radius-sm);
-  border:1px solid var(--border);font-size:.85rem;color:var(--muted);font-family:var(--font-mono)}
-.gh-star:hover{border-color:var(--border-strong);color:var(--text)}
-
-/* ── 按钮 ── */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:10px 18px;border-radius:var(--radius);font-size:.92rem;font-weight:560;
-  border:1px solid transparent;cursor:pointer;transition:all .16s var(--ease);
-  white-space:nowrap}
-.btn-primary{background:var(--accent);color:var(--on-fill)}
-.btn-primary:hover{background:var(--accent-hover);transform:translateY(-1px)}
-.btn-ghost{border-color:var(--border-strong);color:var(--text);background:transparent}
-.btn-ghost:hover{background:var(--nav-hover);border-color:var(--accent-ring)}
-.btn-sm{padding:7px 13px;font-size:.85rem}
-
-/* ── 公告条 ── */
-.announce{background:var(--accent-weak);border-bottom:1px solid var(--border);
-  font-size:.85rem;text-align:center;padding:9px 24px;color:var(--text)}
-.announce b{color:var(--accent);font-weight:620}
-.announce a{border-bottom:1px solid var(--accent-ring)}
-
-/* ── Hero ── */
-.hero{padding:88px 0 72px;position:relative}
-.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:52px;align-items:start}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:999px;
-  background:var(--accent-weak);border:1px solid var(--accent-ring);
-  color:var(--accent);font-size:.78rem;font-weight:560;letter-spacing:.02em;margin-bottom:22px}
-.hero h1{font-size:clamp(1.95rem,3.5vw,2.85rem);font-weight:700;letter-spacing:-.025em;margin-bottom:20px;text-wrap:balance}
-.hero .lede{font-size:1.06rem;color:var(--muted);max-width:34em;line-height:1.7;margin-bottom:14px}
-.hero .lede strong{color:var(--text);font-weight:600}
-.hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
-.hero-note{font-size:.82rem;color:var(--muted);margin-top:16px;display:flex;align-items:center;gap:7px}
-.dot{width:5px;height:5px;border-radius:50%;background:var(--pass);flex:none}
-
-/* 三数字 */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:40px;
-  background:var(--border-soft);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
-.stat{background:var(--bg);padding:18px 16px}
-.stat-n{font-size:1.75rem;font-weight:680;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
-.stat-n small{font-size:.9rem;font-weight:500;color:var(--muted);margin-left:3px}
-.stat-l{font-size:.79rem;color:var(--muted);margin-top:5px;line-height:1.45}
-.stat-src{font-size:.7rem;color:var(--skip);margin-top:3px}
-
-/* ── 主视觉：真实诊断报告 ── */
-.report{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
-  box-shadow:var(--shadow-pop);overflow:hidden;font-family:var(--font-mono);font-size:.78rem}
-.report-bar{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);
-  background:var(--surface2);font-family:var(--font);font-size:.76rem;color:var(--muted)}
-.tl{display:flex;gap:5px}
-.tl i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.16);display:block}
-.report-bar .rb-title{flex:1;text-align:center;margin-right:-42px}
-.report-body{padding:16px 18px;line-height:1.72}
-.rp-tag{color:var(--accent)}
-.rp-dim{color:var(--muted)}
-.rp-ok{color:var(--pass)}
-.rp-warn{color:var(--warn)}
-.rp-fail{color:var(--fail)}
-.chip{display:inline-block;padding:1px 7px;border-radius:5px;background:var(--accent-soft);
-  color:var(--accent);font-size:.72rem;margin:0 2px;border:1px solid var(--accent-ring)}
-.ev-line{display:flex;gap:10px;padding:7px 0;border-top:1px solid var(--border-soft)}
-.ev-line:first-of-type{border-top:0}
-.ev-body{flex:1;min-width:0}
-.ev-t{color:var(--text);font-family:var(--font);font-size:.82rem}
-.ev-x{color:var(--muted);font-size:.74rem;margin-top:3px;font-family:var(--font-mono)}
-.report-foot{padding:11px 18px;border-top:1px solid var(--border);background:var(--surface2);
-  display:flex;justify-content:space-between;align-items:center;font-family:var(--font);font-size:.76rem;color:var(--muted)}
-
-/* ── 通用区块 ── */
-section{padding:76px 0}
-section.tight{padding:56px 0}
-.sec-head{max-width:44em;margin-bottom:40px}
-.sec-kicker{font-size:.76rem;font-weight:620;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--accent);margin-bottom:12px}
-.sec-head h2{font-size:clamp(1.55rem,2.6vw,2.05rem);margin-bottom:13px;letter-spacing:-.02em}
-.sec-head p{color:var(--muted);font-size:1rem;line-height:1.7}
-.rule{height:1px;background:var(--border-soft)}
-
-/* ── 链路四步 ── */
-.chain{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.chain-step{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-lg);
-  padding:20px 18px;position:relative;transition:border-color .16s var(--ease),transform .16s var(--ease)}
-.chain-step:hover{border-color:var(--accent-ring);transform:translateY(-2px)}
-.chain-n{font-family:var(--font-mono);font-size:.72rem;color:var(--accent);letter-spacing:.06em;margin-bottom:10px}
-.chain-step h3{font-size:1rem;margin-bottom:8px}
-.chain-step p{font-size:.86rem;color:var(--muted);line-height:1.62}
-.chain-step ul{margin:11px 0 0;padding-left:1.05em;font-size:.82rem;color:var(--muted);line-height:1.7}
-.chain-step li::marker{color:var(--accent)}
-
-/* ── 部署三卡 ── */
-.deploy{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.dcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
-  padding:24px 22px;display:flex;flex-direction:column;transition:border-color .16s var(--ease)}
-.dcard:hover{border-color:var(--border-strong)}
-.dcard.featured{border-color:var(--accent-ring);background:linear-gradient(180deg,var(--accent-weak),transparent 46%)}
-.dcard-badge{display:inline-block;align-self:flex-start;padding:3px 9px;border-radius:5px;
-  font-size:.7rem;font-weight:620;letter-spacing:.04em;margin-bottom:13px;
-  background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
-.dcard-badge.open{background:var(--accent-weak);color:var(--accent);border-color:var(--accent-ring)}
-.dcard h3{font-size:1.08rem;margin-bottom:6px}
-.dcard .d-sub{font-size:.85rem;color:var(--muted);margin-bottom:15px}
-.dcard ul{list-style:none;padding:0;margin:0 0 20px;flex:1}
-.dcard li{font-size:.85rem;color:var(--muted);padding:5px 0 5px 21px;position:relative;line-height:1.55}
-.dcard li::before{content:"";position:absolute;left:0;top:12px;width:9px;height:2px;
-  background:var(--accent);border-radius:2px}
-.dcard li b{color:var(--text);font-weight:560}
-
-/* ── 能力四块 ── */
-.caps{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.cap{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:26px 24px}
-.cap-h{display:flex;align-items:center;gap:11px;margin-bottom:14px}
-.cap-ico{width:32px;height:32px;border-radius:9px;background:var(--accent-weak);
-  display:grid;place-items:center;color:var(--accent);flex:none}
-.cap h3{font-size:1.04rem}
-.cap .cap-sub{font-size:.8rem;color:var(--muted);margin-left:auto;font-family:var(--font-mono);font-size:.74rem}
-.cap p{font-size:.9rem;color:var(--muted);line-height:1.68;margin-bottom:14px}
-.cap-list{list-style:none;padding:0;margin:0;display:grid;gap:7px}
-.cap-list li{font-size:.85rem;color:var(--muted);padding-left:20px;position:relative;line-height:1.55}
-.cap-list li::before{content:"";position:absolute;left:2px;top:8px;width:6px;height:6px;
-  border-radius:2px;background:var(--accent);opacity:.75}
-.cap-list li b{color:var(--text);font-weight:560;font-family:var(--font-mono);font-size:.82rem}
-
-/* ── 证据链深色区块 ── */
-.evidence{background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
-.ev-points{list-style:none;padding:0;margin:26px 0 0;display:grid;gap:15px}
-.ev-points li{display:flex;gap:13px;font-size:.92rem;color:var(--muted);line-height:1.62}
-.ev-points .k{flex:none;width:20px;height:20px;border-radius:50%;background:var(--accent-weak);
-  color:var(--accent);display:grid;place-items:center;font-size:.68rem;font-weight:700;margin-top:1px}
-.ev-points b{color:var(--text);font-weight:600}
-
-/* ── 表格 ── */
-.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface)}
-table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:620px}
-th,td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--border-soft);vertical-align:top}
-thead th{background:var(--surface2);font-size:.78rem;font-weight:620;color:var(--muted);
-  letter-spacing:.03em;text-transform:uppercase;position:sticky;top:0}
-tbody tr:last-child td{border-bottom:0}
-td:first-child{font-weight:560}
-.yes{color:var(--pass);font-weight:600}
-.no{color:var(--skip)}
-
-/* ── 学习学院 ── */
-.paths{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
-.path-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 15px;border-radius:999px;
-  border:1px solid var(--border);background:var(--surface);font-size:.85rem;color:var(--muted);
-  transition:border-color .16s var(--ease)}
-.path-chip:hover{border-color:var(--accent-ring)}
-.path-chip b{color:var(--text);font-weight:600}
-.path-chip em{font-style:normal;color:var(--accent);font-size:.75rem}
-.learn-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.learn-card{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-lg);
-  padding:22px 20px;transition:border-color .16s var(--ease)}
-.learn-card:hover{border-color:var(--accent-ring)}
-.learn-card h3{font-size:1.02rem;margin-bottom:4px}
-.learn-card .l-sub{font-size:.8rem;color:var(--muted);margin-bottom:13px}
-.learn-card ul{list-style:none;padding:0;margin:0}
-.learn-card li{display:flex;justify-content:space-between;gap:12px;font-size:.87rem;
-  color:var(--muted);padding:8px 0;border-top:1px solid var(--border-soft);line-height:1.5}
-.learn-card li b{color:var(--text);font-weight:530}
-.learn-card li .rt{font-family:var(--font-mono);font-size:.72rem;color:var(--skip);flex:none;padding-top:2px}
-.learn-card .l-more{display:inline-block;margin-top:11px;font-size:.82rem;color:var(--accent)}
-.learn-card .l-more:hover{text-decoration:underline}
-
-/* ── 开源专区（赛道地图）── */
-.hub-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.hub-item{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius);
-  padding:16px 15px;transition:border-color .16s var(--ease),transform .16s var(--ease)}
-.hub-item:hover{border-color:var(--accent-ring);transform:translateY(-2px)}
-.hub-item .h-t{display:flex;justify-content:space-between;align-items:baseline;font-size:.92rem;font-weight:620}
-.hub-item .h-t small{font-family:var(--font-mono);font-size:.7rem;color:var(--skip);font-weight:400}
-.hub-item .h-d{font-size:.79rem;color:var(--muted);margin-top:7px;line-height:1.58;min-height:2.5em}
-.hub-item .h-c{margin-top:11px}
-.tag{display:inline-block;font-size:.68rem;padding:2px 8px;border-radius:4px;
-  background:var(--accent-weak);color:var(--accent);margin:0 5px 5px 0}
-.hub-note{margin-top:16px;font-size:.83rem;color:var(--muted)}
-.hub-note a{color:var(--accent);border-bottom:1px solid var(--accent-ring)}
-
-/* ── Agent 社区 · 技能集市 ── */
-.com-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
-.com-tab{padding:9px 16px;border-radius:999px;border:1px solid var(--border);
-  background:var(--surface);color:var(--muted);font-size:.88rem;font-weight:560;
-  cursor:pointer;transition:all .16s var(--ease)}
-.com-tab em{font-style:normal;font-family:var(--font-mono);font-size:.72rem;
-  color:var(--skip);margin-left:5px}
-.com-tab:hover{border-color:var(--accent-ring);color:var(--text)}
-.com-tab.active{background:var(--accent-soft);border-color:var(--accent-ring);color:var(--accent)}
-.com-tab.active em{color:var(--accent)}
-.skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.skill-card{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-lg);
-  padding:19px 18px;display:flex;flex-direction:column;transition:border-color .16s var(--ease)}
-.skill-card:hover{border-color:var(--accent-ring)}
-.skill-card .s-h{display:flex;align-items:baseline;gap:9px;margin-bottom:6px}
-.skill-card .s-h b{font-family:var(--font-mono);font-size:.95rem;font-weight:620}
-.verified{display:inline-block;font-size:.64rem;padding:2px 7px;border-radius:4px;flex:none;
-  background:var(--pass-weak);color:var(--pass);font-weight:600;letter-spacing:.02em}
-.community-tag{display:inline-block;font-size:.64rem;padding:2px 7px;border-radius:4px;flex:none;
-  background:var(--accent-weak);color:var(--accent);font-weight:600}
-.skill-card .s-d{font-size:.86rem;color:var(--muted);line-height:1.62;margin-bottom:11px}
-.skill-card .s-tags{margin-bottom:12px}
-.skill-card .s-tags .tag{background:var(--surface2);color:var(--muted);border:1px solid var(--border-soft)}
-.skill-metrics{display:flex;gap:14px;padding:9px 11px;border-radius:var(--radius-sm);
-  background:var(--surface2);border:1px solid var(--border-soft);margin-bottom:11px}
-.skill-metrics span{font-size:.72rem;color:var(--muted);font-family:var(--font-mono)}
-.skill-metrics span b{color:var(--text);font-weight:600}
-.skill-metrics .insufficient{color:var(--skip)}
-.import-cmd{font-family:var(--font-mono);font-size:.74rem;color:var(--accent);
-  padding:8px 11px;border-radius:var(--radius-sm);border:1px dashed var(--accent-ring);
-  background:var(--accent-weak)}
-.official-rows{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.official-row{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius);
-  padding:15px 16px}
-.official-row .o-h{display:flex;align-items:baseline;gap:8px;margin-bottom:5px}
-.official-row .o-h b{font-family:var(--font-mono);font-size:.9rem}
-.official-row p{font-size:.82rem;color:var(--muted);line-height:1.55}
-.official-row .o-scope{font-family:var(--font-mono);font-size:.7rem;color:var(--accent);margin-top:7px}
-.contrib{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;margin-top:20px}
-.contrib-steps{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-lg);padding:22px 22px}
-.contrib-steps h3{font-size:1.02rem;margin-bottom:15px}
-.cstep{display:flex;gap:13px;padding:11px 0;border-top:1px solid var(--border-soft)}
-.cstep:first-of-type{border-top:0;padding-top:0}
-.cstep .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent-weak);
-  color:var(--accent);display:grid;place-items:center;font-size:.76rem;font-weight:700;margin-top:1px}
-.cstep .t{font-size:.9rem}
-.cstep .t b{font-weight:620}
-.cstep .t p{font-size:.83rem;color:var(--muted);margin-top:3px;line-height:1.6}
-.contrib-wall{background:var(--surface2);border:1px dashed var(--border-strong);
-  border-radius:var(--radius-lg);padding:22px;display:grid;place-items:center;text-align:center}
-.contrib-wall .cw-h{font-size:1rem;font-weight:620;margin-bottom:6px}
-.contrib-wall .cw-d{font-size:.84rem;color:var(--muted);line-height:1.65;max-width:24em}
-.contrib-wall .cw-d b{color:var(--accent)}
-.safety-bar{display:flex;gap:12px;align-items:flex-start;margin-top:18px;padding:15px 17px;
-  border-radius:var(--radius);background:var(--pass-weak);border:1px solid rgba(var(--pass-rgb),.3)}
-.safety-bar svg{flex:none;margin-top:2px}
-.safety-bar p{font-size:.84rem;color:var(--muted);line-height:1.6}
-.safety-bar b{color:var(--text)}
-.leaderboard{margin-top:20px;background:var(--surface);border:1px solid var(--border-soft);
-  border-radius:var(--radius-lg);padding:18px 20px;display:flex;gap:16px;align-items:center}
-.lb-cup{flex:none;width:38px;height:38px;border-radius:10px;background:var(--accent-weak);
-  display:grid;place-items:center;color:var(--accent)}
-.leaderboard .lb-t{font-size:.92rem;font-weight:620;margin-bottom:3px}
-.leaderboard .lb-d{font-size:.8rem;color:var(--muted);line-height:1.55}
-
-/* ── VIP · 定时任务 ── */
-.vip-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:999px;
-  background:linear-gradient(90deg, rgba(var(--accent-rgb),.18), rgba(var(--pass-rgb),.14));
-  border:1px solid var(--accent-ring);color:var(--text);font-size:.78rem;font-weight:600;letter-spacing:.02em}
-.vip-badge em{font-style:normal;color:var(--accent);font-family:var(--font-mono);font-size:.72rem}
-.vip-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:start}
-.vip-tpl{margin-top:22px;display:grid;gap:9px}
-.vip-tpl .vt{display:flex;gap:12px;align-items:flex-start;background:var(--surface);
-  border:1px solid var(--border-soft);border-radius:var(--radius);padding:13px 15px;
-  transition:border-color .16s var(--ease)}
-.vip-tpl .vt:hover{border-color:var(--accent-ring)}
-.vip-tpl .vt-ico{flex:none;width:30px;height:30px;border-radius:8px;background:var(--accent-weak);
-  display:grid;place-items:center;font-size:.9rem}
-.vip-tpl .vt-t{font-size:.9rem;font-weight:620}
-.vip-tpl .vt-t small{font-family:var(--font-mono);font-size:.7rem;color:var(--accent);font-weight:500;margin-left:8px}
-.vip-tpl .vt-d{font-size:.8rem;color:var(--muted);margin-top:3px;line-height:1.55}
-.vip-note{margin-top:16px;font-size:.82rem;color:var(--muted);line-height:1.6}
-.vip-note b{color:var(--text)}
-.vip-note .mono{font-family:var(--font-mono);font-size:.76rem;color:var(--accent)}
-.vip-soon{display:inline-block;margin-top:16px;font-size:.78rem;color:var(--warn);
-  font-family:var(--font-mono)}
-/* 模拟界面（静态预览） */
-.vip-mock{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
-  box-shadow:var(--shadow-pop);overflow:hidden}
-.vm-bar{display:flex;align-items:center;gap:8px;padding:10px 15px;border-bottom:1px solid var(--border);
-  background:var(--surface2);font-size:.78rem;color:var(--muted)}
-.vm-bar .vm-badge{margin-left:auto;font-size:.68rem;padding:2px 9px;border-radius:999px;
-  background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-ring);font-weight:600}
-.vm-body{padding:16px 18px;display:grid;gap:13px}
-.vm-field label{display:block;font-size:.72rem;color:var(--muted);margin-bottom:5px;font-weight:600}
-.vm-field .v-in{padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);
-  font-size:.84rem;color:var(--text);background:var(--surface2)}
-.vm-field .v-in.prompt{color:var(--muted);line-height:1.6}
-.vm-field .v-in.prompt b{color:var(--text);font-weight:560}
-.vm-sched{display:flex;align-items:center;gap:9px;font-size:.8rem;color:var(--text);
-  padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2)}
-.vm-sched .s-chip{font-family:var(--font-mono);font-size:.72rem;color:var(--accent);
-  background:var(--accent-weak);padding:2px 8px;border-radius:4px}
-.vm-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.vm-row .v-in{font-size:.78rem;padding:8px 10px}
-.vm-row .v-in small{display:block;color:var(--muted);font-size:.66rem;margin-bottom:2px}
-.vm-foot{display:flex;justify-content:flex-end;gap:9px;padding:12px 18px;border-top:1px solid var(--border);
-  background:var(--surface2);font-size:.78rem;color:var(--muted);align-items:center}
-
-/* ── 终端（固定深色调色板，不随主题变）── */
-.term{--t-bg:#0b0c0e;--t-fg:#d7dae0;--t-dim:#8b929e;--t-ok:#5ed07a;--t-warn:#e3b341;--t-acc:#6cb2f5;
-  background:var(--t-bg);border:1px solid var(--border);border-radius:var(--radius-lg);
-  overflow:hidden;font-family:var(--font-mono);font-size:.8rem}
-.term-bar{padding:8px 13px;border-bottom:1px solid rgba(255,255,255,.09);background:#15171b;
-  display:flex;align-items:center;gap:7px;font-family:var(--font);font-size:.75rem;color:var(--t-dim)}
-.term-body{padding:16px 18px;line-height:1.75;overflow-x:auto;color:var(--t-fg)}
-.term-body .c{color:var(--t-dim)}
-.term-body .p{color:var(--t-ok)}
-.term-body .w{color:var(--t-warn)}
-.term-body .a{color:var(--t-acc)}
-
-/* ── 文档/接口小卡 ── */
-.mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.mini{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius);
-  padding:16px 15px;transition:border-color .16s var(--ease)}
-.mini:hover{border-color:var(--accent-ring)}
-.mini .m-t{font-size:.9rem;font-weight:560;margin-bottom:5px}
-.mini .m-d{font-size:.78rem;color:var(--muted);line-height:1.5}
-.mini .m-p{font-family:var(--font-mono);font-size:.72rem;color:var(--accent);margin-top:9px}
-
-/* ── FAQ ── */
-.faq{max-width:760px}
-.faq details{border-bottom:1px solid var(--border-soft)}
-.faq summary{cursor:pointer;list-style:none;padding:19px 34px 19px 0;position:relative;
-  font-size:.98rem;font-weight:560}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";position:absolute;right:4px;top:19px;color:var(--muted);
-  font-size:1.25rem;font-weight:400;line-height:1}
-.faq details[open] summary::after{content:"−";color:var(--accent)}
-.faq p{padding:0 40px 20px 0;color:var(--muted);font-size:.91rem;line-height:1.7}
-
-/* ── CTA 尾 ── */
-.final{text-align:center;padding:88px 0}
-.final h2{font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:15px;letter-spacing:-.02em}
-.final p{color:var(--muted);max-width:38em;margin:0 auto 28px;font-size:1rem}
-.final .hero-cta{justify-content:center}
-
-/* ── 页脚 ── */
-footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--chrome-bg)}
-.foot-grid{display:grid;grid-template-columns:1.3fr repeat(5,1fr);gap:28px;margin-bottom:38px}
-.foot-brand p{font-size:.83rem;color:var(--muted);margin-top:13px;max-width:26em;line-height:1.62}
-.foot-col h4{font-size:.79rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);
-  font-weight:620;margin-bottom:13px}
-.foot-col a{display:block;font-size:.87rem;color:var(--muted);padding:4px 0;transition:color .15s var(--ease)}
-.foot-col a:hover{color:var(--text)}
-.foot-bot{display:flex;justify-content:space-between;align-items:center;padding-top:22px;
-  border-top:1px solid var(--border-soft);font-size:.8rem;color:var(--muted);gap:16px;flex-wrap:wrap}
-.foot-badges{display:flex;gap:8px;flex-wrap:wrap}
-.badge{font-size:.72rem;padding:3px 9px;border-radius:5px;border:1px solid var(--border);
-  color:var(--muted);font-family:var(--font-mono)}
-
-/* ── 响应式 ── */
-@media (max-width:1000px){
-  .hero-grid{grid-template-columns:1fr;gap:40px}
-  .chain{grid-template-columns:repeat(2,1fr)}
-  .deploy{grid-template-columns:1fr}
-  .caps{grid-template-columns:1fr}
-  .ev-grid{grid-template-columns:1fr;gap:34px}
-  .mini-grid{grid-template-columns:repeat(2,1fr)}
-  .learn-grid{grid-template-columns:1fr}
-  .hub-grid{grid-template-columns:repeat(2,1fr)}
-  .foot-grid{grid-template-columns:1fr 1fr 1fr}
-  .foot-brand{grid-column:1/-1}
-  .nav-links{display:none}
-}
-@media (max-width:620px){
-  .chain{grid-template-columns:1fr}
-  .stats{grid-template-columns:1fr}
-  .mini-grid{grid-template-columns:1fr}
-  .hub-grid{grid-template-columns:1fr}
-  .foot-grid{grid-template-columns:1fr 1fr}
-  .hero{padding:56px 0 48px}
-  section{padding:56px 0}
-  .wrap{padding:0 18px}
-  .gh-star span{display:none}
-}
-@media (prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-}
-</style>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "AIOps AI 运维监控平台", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS", "softwareVersion": "1.8.1", "license": "https://www.gnu.org/licenses/agpl-3.0", "description": "开源自托管的 AI 运维监控平台：拉取式 Agent 零入站端口，告警收敛成事件后交给带证据链的诊断 Agent 排查取证；处置白名单+九道护栏，AI 查清事实，拍板在人。"}
+</script>
+<link rel="stylesheet" href="/assets/site.css?v=2deb5666">
+<meta property="og:title" content="AIOps · AI 运维监控平台 — 告警响了，AI 已经查完，证据链摆在你面前">
+  <meta property="og:description" content="开源自托管的 AI 运维监控平台：拉取式 Agent 零入站端口，告警收敛成事件后交给带证据链的诊断 Agent 排查取证；处置白名单+九道护栏，AI 查清事实，拍板在人。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/assets/og/og-home.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 </head>
 <body>
-
-<!-- 公告条 -->
 <div class="announce">
   <b>v1.8.1</b> 已发布 · 新增「AI 诊断评测闭环」：故障注入脚本即标注机，回放两次结论逐字段一致
   <a href="#">看发布说明 →</a>
 </div>
-
-<!-- 顶栏 -->
 <header class="nav">
   <div class="wrap nav-in">
     <a class="brand" href="#">
@@ -518,13 +36,13 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
       <span class="brand-name"><b>AIOps</b> <span>AI 运维监控平台</span></span>
     </a>
     <nav class="nav-links">
-      <a href="#capabilities">产品</a>
-      <a href="#evidence">证据链</a>
-      <a href="#deploy">部署</a>
-      <a href="#learn">学习学院</a>
-      <a href="#agent-community">Agent 社区</a>
-      <a href="#oss-hub">开源专区</a>
-      <a href="#faq">FAQ</a>
+      <a href="/features.html" data-nav="features">产品</a>
+      <a href="/evidence.html" data-nav="evidence">证据链</a>
+      <a href="/deploy.html" data-nav="deploy">部署</a>
+      <a href="/learn.html" data-nav="learn">学习学院</a>
+      <a href="/agent-community.html" data-nav="agent-community">Agent 社区</a>
+      <a href="/oss-hub.html" data-nav="oss-hub">开源专区</a>
+      <a href="/index.html#faq" data-nav="faq">FAQ</a>
     </nav>
     <div class="nav-spacer"></div>
     <div class="nav-act">
@@ -535,11 +53,11 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
       <button class="icon-btn" id="themeBtn" aria-label="切换明暗主题">
         <svg id="themeIcon" width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm0 1.5a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1A.75.75 0 0 1 8 12.5Zm0-11a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1A.75.75 0 0 1 8 1.5ZM3.05 3.05a.75.75 0 0 1 1.06 0l.7.7a.75.75 0 1 1-1.06 1.06l-.7-.7a.75.75 0 0 1 0-1.06Zm9.14 1.76a.75.75 0 0 1 0 1.06l-.7.7a.75.75 0 1 1-1.06-1.06l.7-.7a.75.75 0 0 1 1.06 0Zm.31 4.69a.75.75 0 0 1-.75.75h-1a.75.75 0 0 1 0-1.5h1a.75.75 0 0 1 .75.75Zm-10 0a.75.75 0 0 1-.75.75h-1a.75.75 0 0 1 0-1.5h1A.75.75 0 0 1 2.5 11Zm1.19 4.44a.75.75 0 0 1 0 1.06l-.7.7a.75.75 0 0 1-1.06-1.06l.7-.7a.75.75 0 0 1 1.06 0ZM12.95 3.05a.75.75 0 0 1 0 1.06l-.7.7a.75.75 0 1 1-1.06-1.06l.7-.7a.75.75 0 0 1 1.06 0Z"/></svg>
       </button>
-      <a class="btn btn-primary btn-sm" href="#deploy">开始部署</a>
+      <a class="btn btn-primary btn-sm" href="/deploy.html">开始部署</a>
     </div>
   </div>
 </header>
-
+<main>
 <!-- ═══════ HERO ═══════ -->
 <div class="wrap">
 <section class="hero">
@@ -947,59 +465,59 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
   <div class="com-track" id="track-community">
     <div class="skill-grid">
       <div class="skill-card">
-        <div class="s-h"><b>nginx-502-troubleshoot</b><span class="community-tag">社区种子</span></div>
-        <p class="s-d">502 三连查：本机端口还听不听 → 上游通不通 → nginx 日志怎么说。先分清"挂了"还是"慢了"，再谈改配置。</p>
-        <div class="s-tags"><span class="tag">nginx.*</span><span class="tag">探活失败</span><span class="tag">502</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录）</span></div>
+        <div class="s-h"><b>cert-chain-checkup</b><span class="community-tag">社区种子</span></div>
+        <p class="s-d">证书告警分两种：快到期和链不完整。排查路径完全不同，别拿续期解决信任链问题。</p>
+        <div class="s-tags"><span class="tag">https-cert</span><span class="tag">探活失败</span></div>
+        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 2 条只读命令</span></div>
+        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
+      </div>
+      <div class="skill-card">
+        <div class="s-h"><b>disk-inode-exhaust</b><span class="community-tag">社区种子</span></div>
+        <p class="s-d">df 还有空间但写入报错，八成是 inode 耗尽。定位小文件目录，而不是急着重启。</p>
+        <div class="s-tags"><span class="tag">disk.*.percent</span><span class="tag">disk.inode.*</span><span class="tag">写入失败</span></div>
+        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 4 条只读命令</span></div>
+        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
+      </div>
+      <div class="skill-card">
+        <div class="s-h"><b>failed-unit-storm</b><span class="community-tag">社区种子</span></div>
+        <p class="s-d">服务反复重启往往不是服务自己的问题。先拉 failed 单元清单，再用 journalctl 找第一现场。</p>
+        <div class="s-tags"><span class="tag">服务不可用</span><span class="tag">探活失败</span><span class="tag">业务端口</span></div>
+        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 3 条只读命令</span></div>
         <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
       </div>
       <div class="skill-card">
         <div class="s-h"><b>mysql-conn-pool-exhaust</b><span class="community-tag">社区种子</span></div>
         <p class="s-d">连接数打满不一定是要加 max_connections：先看 processlist 里谁在占、有没有 sleep 堆积，再判断是泄漏还是容量。</p>
-        <div class="s-tags"><span class="tag">mysql.*</span><span class="tag">连接数</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录）</span></div>
+        <div class="s-tags"><span class="tag">mysql.*</span><span class="tag">连接数</span><span class="tag">连接池</span></div>
+        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 4 条只读命令</span></div>
+        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
+      </div>
+      <div class="skill-card">
+        <div class="s-h"><b>nginx-502-troubleshoot</b><span class="community-tag">社区种子</span></div>
+        <p class="s-d">502/504 三连查：本机端口还听不听 → 上游通不通 → nginx 日志怎么说。先分清"挂了"还是"慢了"，再谈改配置。</p>
+        <div class="s-tags"><span class="tag">nginx.*</span><span class="tag">探活失败</span><span class="tag">502</span><span class="tag">业务HTTP</span></div>
+        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 5 条只读命令</span></div>
         <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
       </div>
       <div class="skill-card">
         <div class="s-h"><b>redis-memory-pressure</b><span class="community-tag">社区种子</span></div>
         <p class="s-d">内存告警先看碎片率与淘汰策略是否匹配，再谈大键。改 maxmemory 之前先回答"内存花在哪了"。</p>
         <div class="s-tags"><span class="tag">redis.*</span><span class="tag">mem.*</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录）</span></div>
-        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
-      </div>
-      <div class="skill-card">
-        <div class="s-h"><b>disk-inode-exhaust</b><span class="community-tag">社区种子</span></div>
-        <p class="s-d">df 还有空间但写入报错，八成是 inode 耗尽。定位小文件目录，而不是急着重启。</p>
-        <div class="s-tags"><span class="tag">disk.*.percent</span><span class="tag">disk.inode.*</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录）</span></div>
+        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 3 条只读命令</span></div>
         <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
       </div>
       <div class="skill-card">
         <div class="s-h"><b>tcp-timewait-storm</b><span class="community-tag">社区种子</span></div>
         <p class="s-d">TIME_WAIT 堆积是高频短连接的信号。先数清楚分布，再看是哪个调用方在疯狂建连。</p>
         <div class="s-tags"><span class="tag">net.tcp.*</span><span class="tag">连接异常</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录）</span></div>
-        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
-      </div>
-      <div class="skill-card">
-        <div class="s-h"><b>cert-chain-checkup</b><span class="community-tag">社区种子</span></div>
-        <p class="s-d">证书告警分两种：快到期和链不完整。排查路径完全不同，别拿续期解决信任链问题。</p>
-        <div class="s-tags"><span class="tag">https-cert</span><span class="tag">探活失败</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录）</span></div>
-        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
-      </div>
-      <div class="skill-card">
-        <div class="s-h"><b>failed-unit-storm</b><span class="community-tag">社区种子</span></div>
-        <p class="s-d">服务反复重启往往不是服务自己的问题。先拉 failed 单元清单，再用 journalctl 找第一现场。</p>
-        <div class="s-tags"><span class="tag">服务不可用</span><span class="tag">探活失败</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录）</span></div>
+        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 3 条只读命令</span></div>
         <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
       </div>
       <div class="skill-card">
         <div class="s-h"><b>time-drift-check</b><span class="community-tag">社区种子</span></div>
         <p class="s-d">时间漂移会污染取证时间窗与告警时刻。接入前查一次，排查跨机日志前再查一次。</p>
-        <div class="s-tags"><span class="tag">主机离线</span><span class="tag">时间窗</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录）</span></div>
+        <div class="s-tags"><span class="tag">主机离线</span><span class="tag">时间窗</span><span class="tag">跨机对齐</span></div>
+        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 1 条只读命令</span></div>
         <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
       </div>
     </div>
@@ -1080,22 +598,22 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
 
       <div class="vip-tpl">
         <div class="vt">
-          <span class="vt-ico">📋</span>
+          <span class="vt-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></span>
           <div><div class="vt-t">晨会动态 <small>每工作日 09:00</small></div>
           <div class="vt-d">汇总过去一个工作日的告警、事件、巡检结果与恢复情况，生成不超过 6 条的晨会口述摘要。只读分析。</div></div>
         </div>
         <div class="vt">
-          <span class="vt-ico">🔍</span>
+          <span class="vt-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
           <div><div class="vt-t">风险扫描 <small>每天 10:00</small></div>
           <div class="vt-d">检查最近 24 小时的新增告警与指标异常，识别高置信风险并附证据 token——不是罗列，是按影响排序。</div></div>
         </div>
         <div class="vt">
-          <span class="vt-ico">📦</span>
+          <span class="vt-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
           <div><div class="vt-t">本周复盘 <small>每周五 16:00</small></div>
           <div class="vt-d">整理本周全部事件与处置：按服务、根因分类，生成团队版与管理层精简版两份。</div></div>
         </div>
         <div class="vt">
-          <span class="vt-ico">🕰️</span>
+          <span class="vt-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
           <div><div class="vt-t">慢性炸弹巡检 <small>每周三 15:00</small></div>
           <div class="vt-d">证书到期、磁盘缓慢增长、备份任务静默失败——专查"还没爆但快了"的那类。</div></div>
         </div>
@@ -1104,9 +622,9 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
       <p class="vip-note">
         <b>门禁</b>：License 模块位 <span class="mono">pro</span> 解锁（离线 HMAC 验签，随商业授权发放）；
         无 pro 位时页面显示引导、API 返回 403。<b>自定义指令</b>：任何自然语言指令都能上时间表，
-        执行范围限定为只读工具链——无人值守场景不做任何写操作，这是设计不是限制。
+        执行范围限定为只读工具链——定时执行场景同样不做任何写操作，这是设计不是限制。
       </p>
-      <span class="vip-soon">⚡ 设计预览 · 功能即将上线 · 加入首批体验名单</span>
+      <span class="vip-soon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> 设计预览 · 功能即将上线 · 加入首批体验名单</span>
     </div>
 
     <!-- 静态界面预览 -->
@@ -1119,10 +637,10 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
       <div class="vm-body">
         <div class="vm-field"><label>任务标题</label><div class="v-in">晨会动态</div></div>
         <div class="vm-field"><label>调度</label>
-          <div class="vm-sched">📅 每工作日 09:00 <span class="s-chip">北京时间</span> <span class="s-chip">下次运行 14h 后</span> <span class="s-chip">+ 添加计划</span></div>
+          <div class="vm-sched"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 每工作日 09:00 <span class="s-chip">北京时间</span> <span class="s-chip">下次运行 14h 后</span> <span class="s-chip">+ 添加计划</span></div>
         </div>
         <div class="vm-field"><label>指令（自然语言）</label>
-          <div class="v-in prompt">汇总昨天 18:00 至今的告警与事件，按严重度排序；已恢复的标 ✅，未恢复的给出<b>主机、根因摘要与建议动作</b>；末尾附一条"今天最该看的一件事"。不超过 6 条，推送到飞书值班群。</div>
+          <div class="v-in prompt">汇总昨天 18:00 至今的告警与事件，按严重度排序；已恢复的打勾标记，未恢复的给出<b>主机、根因摘要与建议动作</b>；末尾附一条"今天最该看的一件事"。不超过 6 条，推送到飞书值班群。</div>
         </div>
         <div class="vm-row">
           <div class="v-in"><small>执行范围</small>全部主机（按可见域）</div>
@@ -1325,6 +843,7 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
 </div>
 
 <!-- ═══════ 页脚 ═══════ -->
+</main>
 <footer>
   <div class="wrap">
     <div class="foot-grid">
@@ -1349,7 +868,7 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
       </div>
       <div class="foot-col">
         <h4>产品</h4>
-        <a href="#capabilities">发现</a><a href="#capabilities">定位</a><a href="#capabilities">处置</a><a href="#capabilities">沉淀</a><a href="#deploy">部署</a>
+        <a href="/features.html#discover"</a><a href="/features.html#locate"</a><a href="/features.html#execute"<a href="/features.html#settle"</a><a href="/deploy.html"</a>
       </div>
       <div class="foot-col">
         <h4>文档</h4>
@@ -1357,7 +876,7 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
       </div>
       <div class="foot-col">
         <h4>学习</h4>
-        <a href="#learn">AI 机制拆解</a><a href="#learn">SRE 基础</a><a href="#learn">实战教程 12 篇</a><a href="#learn">面试题库 46 题</a><a href="#oss-hub">开源专区</a>
+        <a href="/learn-aiops.html"</a><a href="/learn-sre.html"</a><a href="/learn-tutorials.html"</a><a href="/learn-interview.html"</a><a href="/oss-hub.html"</a>
       </div>
       <div class="foot-col">
         <h4>开源</h4>
@@ -1374,54 +893,6 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
     </div>
   </div>
 </footer>
-
-<script>
-  // 主题切换（无 CDN、无外部依赖；持久化到 localStorage）
-  (function () {
-    var KEY = "aiops_site_theme";
-    var root = document.documentElement;
-    var saved = null;
-    try { saved = localStorage.getItem(KEY); } catch (e) {}
-    if (saved) root.setAttribute("data-theme", saved);
-
-    var btn = document.getElementById("themeBtn");
-    var icon = document.getElementById("themeIcon");
-    var SUN = '<path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm0 1.5a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1A.75.75 0 0 1 8 12.5Zm0-11a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1A.75.75 0 0 1 8 1.5ZM3.05 3.05a.75.75 0 0 1 1.06 0l.7.7a.75.75 0 1 1-1.06 1.06l-.7-.7a.75.75 0 0 1 0-1.06Zm9.14 1.76a.75.75 0 0 1 0 1.06l-.7.7a.75.75 0 1 1-1.06-1.06l.7-.7a.75.75 0 0 1 1.06 0Zm.31 4.69a.75.75 0 0 1-.75.75h-1a.75.75 0 0 1 0-1.5h1a.75.75 0 0 1 .75.75Zm-10 0a.75.75 0 0 1-.75.75h-1a.75.75 0 0 1 0-1.5h1A.75.75 0 0 1 2.5 11Zm1.19 4.44a.75.75 0 0 1 0 1.06l-.7.7a.75.75 0 1 1-1.06-1.06l.7-.7a.75.75 0 0 1 1.06 0ZM12.95 3.05a.75.75 0 0 1 0 1.06l-.7.7a.75.75 0 1 1-1.06-1.06l.7-.7a.75.75 0 0 1 1.06 0Z"/>';
-    var MOON = '<path d="M9.598 1.591a.75.75 0 0 1 .785-.175 7 7 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786ZM1.5 2.75a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1-.75-.75Zm0 5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5h-3A.75.75 0 0 1 1.5 7.75Zm7 7a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1-.75-.75ZM2.75 12a.75.75 0 0 1 .75-.75h.5a.75.75 0 0 1 0 1.5h-.5a.75.75 0 0 1-.75-.75Z"/>';
-
-    function paint() {
-      var dark = root.getAttribute("data-theme") !== "light";
-      icon.innerHTML = dark ? MOON : SUN;
-      btn.setAttribute("aria-label", dark ? "切换到浅色主题" : "切换到深色主题");
-    }
-    paint();
-    btn.addEventListener("click", function () {
-      var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
-      root.setAttribute("data-theme", next);
-      try { localStorage.setItem(KEY, next); } catch (e) {}
-      paint();
-    });
-  })();
-
-  // Agent 社区：三轨 tab 切换
-  (function () {
-    var tabs = document.querySelectorAll(".com-tab");
-    if (!tabs.length) return;
-    tabs.forEach(function (t) {
-      t.addEventListener("click", function () {
-        tabs.forEach(function (x) {
-          x.classList.remove("active");
-          x.setAttribute("aria-selected", "false");
-        });
-        t.classList.add("active");
-        t.setAttribute("aria-selected", "true");
-        var track = t.getAttribute("data-track");
-        document.querySelectorAll(".com-track").forEach(function (p) {
-          p.hidden = p.id !== "track-" + track;
-        });
-      });
-    });
-  })();
-</script>
+<script src="/assets/site.js?v=2deb5666" defer></script>
 </body>
 </html>
