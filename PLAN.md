@@ -4,7 +4,8 @@
 |---|---|
 | 版本 | v1.0 · 2026-10-29 |
 | 仓库 | `/Users/summer/aiops-website`（独立项目，与产品仓 `aiops-platform` / 开源仓 `aiops-platform-oss` 三仓并行） |
-| 上游依据 | `docs/官网设计稿.md`（v1.3，已含调研结论）· `docs/开源产品官网设计研究.md`（15 样本）· `docs/TestHub-官网设计文档.md` |
+| 上游依据 | `docs/官网设计稿.md`（v1.3）· `docs/开源产品官网设计研究.md`（15 样本）· `docs/TestHub-官网设计文档.md` |
+| 工程文档 | P1~P4 四件套（`docs/engineering/`）：[01-需求文档](docs/engineering/01-需求文档.md)（29 FR）· [02-概要设计与开发设计](docs/engineering/02-概要设计与开发设计.md) · [03-开发方案计划](docs/engineering/03-开发方案计划.md)（21 工作包）· [04-测试文档](docs/engineering/04-测试文档.md)（18 守卫 + 12 E2E） |
 | 现状 | P0 已完成：调研 3 轮 + 设计稿 15 屏 + 可交互原型（`site/index.html`，70.6KB 单文件，深浅双主题）+ 8 个种子技能 + 贡献指南 |
 
 ---
