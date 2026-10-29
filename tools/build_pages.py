@@ -15,6 +15,15 @@ SITE = ROOT / "site"
 SRC = SITE / "src"
 PRODUCT = Path("/Users/summer/aiops-platform")
 
+# ── 品牌与仓库：单一事实源 ──
+# 品牌名：站内所有可见文字（标题/导航/页脚/正文/OG/文档）统一由此派生，
+#        源文件里写 {{BRAND}}，改这里即全站生效（D21 品牌统一）。
+BRAND = "TestOps"
+# 仓库地址：GitHub 仓库已改名为 TestOps，qsumm/AIOps 走 GitHub 永久重定向；
+#           站内一律用新地址，避免依赖重定向（D21）。
+REPO = "https://github.com/qsumm/TestOps"
+REPO_CLONE = f"{REPO}.git"
+
 # ───────────────────────── 数据钩子 ─────────────────────────
 
 def _fm(path: Path) -> dict:
@@ -101,7 +110,7 @@ def hook_learn_cards(rel_dir: str, github_suffix: str | None) -> str:
         body = fm.get("_body", md.read_text(encoding="utf-8"))
         title = fm.get("name") or re.sub(r"\.md$", "", md.name)
         blurb = _first_para(body)
-        link = (f'<a class="l-more" href="https://github.com/qsumm/AIOps/tree/main/learning/{rel_dir}/{md.name}" '
+        link = (f'<a class="l-more" href="{REPO}/tree/main/learning/{rel_dir}/{md.name}" '
                 f'target="_blank" rel="noopener">阅读正文 →</a>') if github_suffix else \
                '<span class="l-more" style="color:var(--skip)">正文整理中 · 随开源发布恢复</span>'
         cards.append(f"""      <div class="learn-card" style="padding:18px 17px">
@@ -237,28 +246,32 @@ def build_doc_pages() -> dict[str, tuple]:
                      re.sub(r"^\d+-", "", re.sub(r"\.md$", "", md.name)),
                      TUTORIAL_BLURBS.get(num, "跟着做一遍就能上手的实战教程。"),
                      "/learn-tutorials.html", "教程目录",
-                     "https://github.com/qsumm/AIOps/tree/main/docs/05-教程"))
+                     f"{REPO}/tree/main/docs/05-教程"))
         (assets_md / "tutorials").mkdir(parents=True, exist_ok=True)
         (assets_md / "tutorials" / f"{num}.md").write_text(md.read_text(encoding="utf-8"), encoding="utf-8")
     # learning 文章（aiops / sre-basics）
-    for rel, back in (("aiops", "/learn-aiops.html"), ("sre-basics", "/learn-sre.html")):
-        (assets_md / "learn" / rel).mkdir(parents=True, exist_ok=True)
+    # (产品仓源目录, 站点目录, 返回页)：源目录 aiops → 站点目录 testops（品牌统一，D21）
+    for rel, site_rel, back in (("aiops", "testops", "/learn-testops.html"),
+                                ("sre-basics", "sre-basics", "/learn-sre.html")):
+        (assets_md / "learn" / site_rel).mkdir(parents=True, exist_ok=True)
         for md in sorted((PRODUCT / "learning" / rel).glob("*.md")):
             if md.name == "README.md":
                 continue
             slug = re.sub(r"\.md$", "", md.name)
-            jobs.append((f"learn/{rel}/{slug}.html", md, f"/assets/md/learn/{rel}/{slug}.md",
+            jobs.append((f"learn/{site_rel}/{slug}.html", md, f"/assets/md/learn/{site_rel}/{slug}.md",
                          re.sub(r"\.md$", "", md.name), _first_para(_fm(md).get("_body", ""))[:90],
-                         back, "学习学院", "https://github.com/qsumm/AIOps"))
-            (assets_md / "learn" / rel / f"{slug}.md").write_text(md.read_text(encoding="utf-8"), encoding="utf-8")
+                         back, "学习学院", REPO))
+            (assets_md / "learn" / site_rel / f"{slug}.md").write_text(md.read_text(encoding="utf-8"), encoding="utf-8")
     # 面试题库
     qb = PRODUCT / "docs" / "06-面试题库" / "AIOps面试题库.md"
     if qb.exists():
         (assets_md / "learn").mkdir(parents=True, exist_ok=True)
-        (assets_md / "learn" / "interview.md").write_text(qb.read_text(encoding="utf-8"), encoding="utf-8")
+        # 产品仓 md 只读；站点副本做品牌归一（标题里的产品名 → BRAND）
+        (assets_md / "learn" / "interview.md").write_text(
+            qb.read_text(encoding="utf-8").replace("AIOps", BRAND), encoding="utf-8")
         jobs.append(("learn/interview/all.html", qb, "/assets/md/learn/interview.md",
-                     "AIOps 面试题库（46 题）", "含答案、追问链、踩坑回答与简历话术。",
-                     "/learn-interview.html", "面试题库", "https://github.com/qsumm/AIOps"))
+                     "{{BRAND}} 面试题库（46 题）", "含答案、追问链、踩坑回答与简历话术。",
+                     "/learn-interview.html", "面试题库", REPO))
     out = {}
     for rel, md, mdp, title, blurb, back, back_label, origin in jobs:
         out[rel] = (mdp, title, blurb, back, back_label, origin)
@@ -267,7 +280,7 @@ def build_doc_pages() -> dict[str, tuple]:
 
 HOOKS = {
     "SKILL_CARDS": hook_skill_cards,
-    "LEARN_AIOPS_CARDS": lambda: hook_learn_cards("aiops", None),
+    "LEARN_TESTOPS_CARDS": lambda: hook_learn_cards("aiops", None),
     "LEARN_SRE_CARDS": lambda: hook_learn_cards("sre-basics", None),
     "TUTORIAL_GRID": hook_tutorial_cards,
     "DEPLOY_COMMANDS": hook_deploy_commands,
@@ -292,14 +305,20 @@ def build(quiet: bool = False) -> dict[str, str]:
          + (SITE / "assets" / "site.js").read_text(encoding="utf-8")).encode()
     ).hexdigest()[:8]
 
+    def brandify(t: str) -> str:
+        """品牌/仓库 token 归一：{{BRAND}} / {{REPO}} / {{REPO_CLONE}}。"""
+        return t.replace("{{BRAND}}", BRAND).replace("{{REPO_CLONE}}", REPO_CLONE).replace("{{REPO}}", REPO)
+
     def wrap(slug: str, title: str, desc: str, frag: str, nav_active: str | None) -> str:
+        title, desc = brandify(title), brandify(desc)
+        frag = brandify(frag)
         html = layout.replace("{{BUILD}}", build_id)
-        html = html.replace("{{PRE_CONTENT}}", announce if nav_active == "index" else "")
+        html = html.replace("{{PRE_CONTENT}}", brandify(announce) if nav_active == "index" else "")
         n = nav
         for key in re.findall(r'data-nav="([^"]+)"', n):
             n = n.replace(f'data-nav="{key}"',
                           f'data-nav="{key}" aria-current="page"' if key == nav_active else f'data-nav="{key}"')
-        html = html.replace("{{NAV}}", n).replace("{{FOOTER}}", footer)
+        html = html.replace("{{NAV}}", brandify(n)).replace("{{FOOTER}}", brandify(footer))
         html = html.replace("{{TITLE}}", title).replace("{{DESC}}", desc)
         og = (f'<meta property="og:title" content="{title}">\n'
               f'  <meta property="og:description" content="{desc}">\n'
@@ -351,7 +370,7 @@ def build(quiet: bool = False) -> dict[str, str]:
         if slug == "index":
             ld = ('<script type="application/ld+json">\n' +
                   json.dumps({"@context": "https://schema.org", "@type": "SoftwareApplication",
-                              "name": "AIOps AI 运维监控平台", "applicationCategory": "DeveloperApplication",
+                              "name": "{{BRAND}} AI 运维监控平台", "applicationCategory": "DeveloperApplication",
                               "operatingSystem": "Linux, macOS", "softwareVersion": hook_version(),
                               "license": "https://www.gnu.org/licenses/agpl-3.0",
                               "description": page["desc"]}, ensure_ascii=False) + "\n</script>")
@@ -373,7 +392,7 @@ def build(quiet: bool = False) -> dict[str, str]:
     out["sitemap.xml"] = (f'<?xml version="1.0" encoding="UTF-8"?>\n<!-- base_url 未配置时 loc 为占位，上线前在 pages.json 设置 base_url -->\n'
                           f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{locs}\n</urlset>\n')
     out["robots.txt"] = "User-agent: *\nAllow: /\nSitemap: " + (base or "https://REPLACE-BEFORE-LAUNCH") + "/sitemap.xml\n"
-    out["llms.txt"] = f"""# AIOps · AI 运维监控平台
+    out["llms.txt"] = f"""# {BRAND} · AI 运维监控平台
 
 > 开源自托管的 AI 运维监控平台：拉取式 Agent（零入站端口）、指纹状态机告警、带证据链的 AI 根因诊断、九道护栏下的分级处置。版本 {hook_version()}。
 
@@ -383,7 +402,7 @@ def build(quiet: bool = False) -> dict[str, str]:
 
 ## 一键部署
 ```bash
-git clone https://github.com/qsumm/AIOps.git && cd AIOps
+git clone {REPO_CLONE} && cd {BRAND}
 cp backend/.env.example .env   # 把 JWT_SECRET / KEY_STORE_SECRET / DB_PASSWORD 换成随机值
 docker compose --env-file .env -f deploy/docker-compose.yaml up -d --build
 ```

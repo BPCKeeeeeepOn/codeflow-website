@@ -235,7 +235,7 @@ def g17() -> None:
         "tutorials": len(list((prod / "docs" / "05-教程").glob("*.md"))),
     }
     bad = []
-    for slug, key in (("learn-aiops.html", "aiops"), ("learn-sre.html", "sre"), ("learn-tutorials.html", "tutorials")):
+    for slug, key in (("learn-testops.html", "aiops"), ("learn-sre.html", "sre"), ("learn-tutorials.html", "tutorials")):
         s = (SITE / slug).read_text(encoding="utf-8")
         n = len(re.findall(r'<div class="learn-card"|<div class="hub-item"', s))
         if n != counts[key]:
@@ -293,8 +293,37 @@ def g20() -> None:
     g("G20", not bad, "; ".join(bad[:3]))
 
 
+# ── G21 品牌一致性（D21）：旧品牌名零残留 + 新品牌与仓库地址在场 ──
+BRAND = "TestOps"
+REPO = "https://github.com/qsumm/TestOps"
+
+def g21() -> None:
+    bad = []
+    # 1) 站点产物 + 站点资产（md 副本）零旧品牌名
+    for p in list(SITE.rglob("*.html")) + list((SITE / "assets" / "md").rglob("*.md")):
+        n = p.read_text(encoding="utf-8").count("AIOps")
+        if n:
+            bad.append(f"{p.relative_to(SITE)} 旧品牌×{n}")
+    # 2) 源文件（site/src）零旧品牌名——源里应写 {{BRAND}}/{{REPO}} token
+    for p in list((SRC / "pages").glob("*.html")) + list((SRC / "partials").glob("*.html")) + [SRC / "pages.json"]:
+        n = p.read_text(encoding="utf-8").count("AIOps")
+        if n:
+            bad.append(f"src/{p.name} 旧品牌×{n}")
+    # 3) 产物里新品牌与新仓库地址必须在场（防"替换过头"）
+    idx = (SITE / "index.html").read_text(encoding="utf-8")
+    if BRAND not in idx:
+        bad.append("首页缺新品牌名")
+    if REPO not in idx:
+        bad.append("首页缺新仓库地址")
+    # 4) 旧仓库地址零残留（qsumm/AIOps 已改名，靠 GitHub 重定向，站内不应再依赖）
+    for p in list(SITE.rglob("*.html")):
+        if "qsumm/AIOps" in p.read_text(encoding="utf-8"):
+            bad.append(f"{p.relative_to(SITE)} 旧仓库地址")
+    g("G21", not bad, "; ".join(bad[:4]))
+
+
 def main() -> int:
-    for fn in (g01, g03, g04, g05, g06, g07, g08, g09, g10, g11, g12, g13, g14, g15, g16, g17, g18, g19, g20):
+    for fn in (g01, g03, g04, g05, g06, g07, g08, g09, g10, g11, g12, g13, g14, g15, g16, g17, g18, g19, g20, g21):
         try:
             fn()
         except Exception as e:  # noqa: BLE001

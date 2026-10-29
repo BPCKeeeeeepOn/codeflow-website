@@ -17,7 +17,7 @@
           一键部署
         </a>
         <a class="btn btn-ghost" href="#evidence">看一次真实诊断</a>
-        <a class="btn btn-ghost" href="#learn">免费学 AIOps</a>
+        <a class="btn btn-ghost" href="#learn">免费学 {{BRAND}}</a>
       </div>
       <p class="hero-note"><span class="dot"></span>3~6 分钟构建完成 · Docker Compose 一条命令 · 首次登录后请立即改默认密码</p>
 
@@ -159,7 +159,7 @@
         <li>2C4G 单机可跑，内存占用约 0.3 GB</li>
         <li>源码、教程、面试题库全公开</li>
       </ul>
-      <a class="btn btn-primary btn-sm" href="https://github.com/qsumm/AIOps">GitHub 一键拉取</a>
+      <a class="btn btn-primary btn-sm" href="{{REPO}}">GitHub 一键拉取</a>
     </div>
     <div class="dcard">
       <span class="dcard-badge">SELF-HOSTED</span>
@@ -219,7 +219,7 @@
           <span>bash — 一键部署</span>
         </div>
         <div class="term-body">
-<div><span class="c">$</span> git clone https://github.com/qsumm/AIOps.git &amp;&amp; cd AIOps</div>
+<div><span class="c">$</span> git clone {{REPO_CLONE}} &amp;&amp; cd {{BRAND}}</div>
 <div><span class="c">$</span> cp backend/.env.example .env <span class="w"># 改掉 3 个默认密钥</span></div>
 <div><span class="c">$</span> docker compose --env-file .env -f deploy/docker-compose.yaml up -d --build</div>
 <div><span class="p">✓</span> Container aiops-platform <span class="p">healthy</span></div>
@@ -327,7 +327,7 @@
 <section id="learn">
   <div class="sec-head">
     <div class="sec-kicker">学习学院 · 持续更新</div>
-    <h2>不只是用工具，是把 AIOps 学明白</h2>
+    <h2>不只是用工具，是把 {{BRAND}} 学明白</h2>
     <p>把"AI 运维"拆成能读懂、能复述、能写进简历的工程知识。全部免费、无需注册——这个栏目值得你收藏回来。</p>
   </div>
 
@@ -347,7 +347,7 @@
         <li><b>RAG 与案例库为什么越用越聪明</b><span class="rt">10 min</span></li>
         <li><b>给运维场景写 Prompt 的套路</b><span class="rt">8 min</span></li>
       </ul>
-      <a class="l-more" href="/learn-aiops.html">进入栏目 →</a>
+      <a class="l-more" href="/learn-testops.html">进入栏目 →</a>
     </div>
     <div class="learn-card">
       <h3>SRE 基础</h3>
@@ -372,7 +372,7 @@
       <a class="l-more" href="/learn-tutorials.html">全部 12 篇 →</a>
     </div>
     <div class="learn-card">
-      <h3>AIOps 面试题库</h3>
+      <h3>{{BRAND}} 面试题库</h3>
       <p class="l-sub">46 题，含答案、追问链、踩坑回答与简历话术</p>
       <ul>
         <li><b>告警引擎三连问</b>：指纹 / 状态机 / 风暴治理<span class="rt">8 题</span></li>
@@ -591,7 +591,7 @@
       <div class="h-c"><span class="tag">AI Agent</span></div>
     </div>
   </div>
-  <p class="hub-note">收录规则：<b style="color:var(--text)">上游依赖与互补生态</b>——平台真实对接或在相邻赛道。同类产品不收录 · 每月复核 · 发现失联条目请<a href="https://github.com/qsumm/AIOps/issues">提 Issue</a></p>
+  <p class="hub-note">收录规则：<b style="color:var(--text)">上游依赖与互补生态</b>——平台真实对接或在相邻赛道。同类产品不收录 · 每月复核 · 发现失联条目请<a href="{{REPO}}/issues">提 Issue</a></p>
 </section>
 </div>
 
@@ -719,7 +719,7 @@
   <h2>今晚就能知道它靠不靠谱</h2>
   <p>30 分钟部署起来，注入一次真实故障，看 AI 交出来的报告里每条证据能不能点回原始步骤。</p>
   <div class="hero-cta">
-    <a class="btn btn-primary" href="https://github.com/qsumm/AIOps">GitHub 一键拉取</a>
+    <a class="btn btn-primary" href="{{REPO}}">GitHub 一键拉取</a>
     <a class="btn btn-ghost" href="/docs/tutorials/01.html">先读 5 分钟快速开始</a>
   </div>
 </section>

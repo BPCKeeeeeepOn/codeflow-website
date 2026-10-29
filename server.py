@@ -20,7 +20,7 @@ from fastapi.staticfiles import StaticFiles
 BASE = Path(__file__).resolve().parent
 SITE = BASE / "site"
 
-app = FastAPI(title="AIOps 官网", docs_url=None, redoc_url=None)
+app = FastAPI(title="TestOps 官网", docs_url=None, redoc_url=None)
 
 
 @app.get("/api/health")
