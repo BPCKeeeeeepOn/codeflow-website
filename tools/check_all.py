@@ -4,7 +4,7 @@
 任一守卫失败 → exit 1。词表只增不减，命中修内容不改守卫。
 """
 from __future__ import annotations
-import json, re, subprocess, sys
+import json, os, re, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -209,21 +209,22 @@ def g15() -> None:
     g("G15", root_defs <= 2 and inline == 0, f"site.css:root={root_defs} 页面内联={inline}")
 
 
-# ── G16 技能卡 = skills/*.md ──
+# ── G16 Agent 评测页 = EvalDeck 全量嵌入 ──
 def g16() -> None:
-    mds = sorted((ROOT / "agent-community" / "skills").glob("*.md"))
+    """Agent 评测页 = EvalDeck 全量嵌入（iframe + 品牌加载态 + 四能力标记 + token 已替换）。"""
     s = (SITE / "agent-community.html").read_text(encoding="utf-8")
-    idx = (SITE / "index.html").read_text(encoding="utf-8")
-    cards = len(re.findall(r'<div class="skill-card">', s))
-    idx_cards = len(re.findall(r'<div class="skill-card">', idx))
-    names = []
-    for md in mds:
-        mm = re.search(r"^name:\s*(.+)$", md.read_text(encoding="utf-8"), re.M)
-        if mm:
-            names.append(mm.group(1).strip())
-    missing = [n for n in names if n not in s]
-    ok = cards == len(mds) and idx_cards == len(mds) and not missing
-    g("G16", ok, f"卡数={cards} md={len(mds)} 首页={idx_cards} 缺={missing[:2]}")
+    url = os.environ.get("EVALDECK_URL", "http://127.0.0.1:8902/").rstrip("/")
+    checks = [
+        ("iframe 嵌入", 'class="eval-embed"' in s and url in s),
+        ("品牌加载态", "eval-overlay" in s and "Agent 评测平台" in s),
+        ("四能力标记", all(k in s for k in ("Agent-as-a-Judge", "DSL", "实验门禁", "成本"))),
+        ("token 已替换", "{{EVALDECK_URL}}" not in s),
+        ("首页 CTA 已更新", "进入评测" in (SITE / "index.html").read_text(encoding="utf-8")),
+        ("首页四能力卡", all(k in (SITE / "index.html").read_text(encoding="utf-8")
+                             for k in ("Agent-as-a-Judge", "轨迹断言 DSL", "实验门禁", "stale 传播"))),
+    ]
+    bad = [name for name, ok in checks if not ok]
+    g("G16", not bad, f"评测平台嵌入{'完整' if not bad else '缺失:' + ','.join(bad)}")
 
 
 # ── G17 学习目录 = 源文件数 ──
@@ -322,8 +323,36 @@ def g21() -> None:
     g("G21", not bad, "; ".join(bad[:4]))
 
 
+# ── G22 技能卡 = skills/*.md（首页技能集市轨；G16 改判评测嵌入后此锁不撤） ──
+def g22() -> None:
+    """首页技能集市卡数 == skills/*.md 数；抽首尾两张 name/description/命令数逐字段一致。"""
+    mds = sorted((ROOT / "agent-community" / "skills").glob("*.md"))
+    idx = (SITE / "index.html").read_text(encoding="utf-8")
+    n = len(re.findall(r'<div class="skill-card">', idx))
+    bad = []
+    if n != len(mds):
+        bad.append(f"卡{n}≠源{len(mds)}")
+    for md in (mds[:1] + mds[-1:]) if mds else ():
+        s = md.read_text(encoding="utf-8")
+        m = re.match(r"^---\n(.*?)\n---\n?", s, re.S)
+        if not m:
+            bad.append(f"{md.name} 无 frontmatter")
+            continue
+        head = m.group(1)
+        name = re.search(r"^name:\s*(.+)$", head, re.M)
+        desc = re.search(r"^description:\s*(.+)$", head, re.M)
+        if name and name.group(1).strip() not in idx:
+            bad.append(f"{md.name} name 未渲染")
+        if desc and desc.group(1).strip() not in idx:
+            bad.append(f"{md.name} description 未渲染")
+        ncmd = len(re.findall(r"^\s*-\s+\S", head, re.M))
+        if ncmd and f"{ncmd} 条只读命令" not in idx:
+            bad.append(f"{md.name} 命令数 {ncmd} 未渲染")
+    g("G22", not bad, "; ".join(bad[:4]))
+
+
 def main() -> int:
-    for fn in (g01, g03, g04, g05, g06, g07, g08, g09, g10, g11, g12, g13, g14, g15, g16, g17, g18, g19, g20, g21):
+    for fn in (g01, g03, g04, g05, g06, g07, g08, g09, g10, g11, g12, g13, g14, g15, g16, g17, g18, g19, g20, g21, g22):
         try:
             fn()
         except Exception as e:  # noqa: BLE001

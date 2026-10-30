@@ -7,7 +7,7 @@
   · 产品仓只读（VERSION / 快速开始 / changelog.js / learning / 教程），--product-root 可配。
 """
 from __future__ import annotations
-import argparse, json, re, sys, datetime, hashlib
+import argparse, json, os, re, sys, datetime, hashlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +23,10 @@ BRAND = "TestOps"
 #           站内一律用新地址，避免依赖重定向（D21）。
 REPO = "https://github.com/qsumm/TestOps"
 REPO_CLONE = f"{REPO}.git"
+# 评测平台（EvalDeck）地址：源文件里写 {{EVALDECK_URL}}，改这里即全站生效。
+# 本地档指向本机 8902 端口；生产部署时用环境变量 EVALDECK_URL 覆盖为对外域名，
+# 不必改源文件（官网与评测平台分进程部署，跨域由平台侧放行 frame-ancestors）。
+EVALDECK_URL = os.environ.get("EVALDECK_URL", "http://127.0.0.1:8902/")
 
 # ───────────────────────── 数据钩子 ─────────────────────────
 
@@ -306,8 +310,11 @@ def build(quiet: bool = False) -> dict[str, str]:
     ).hexdigest()[:8]
 
     def brandify(t: str) -> str:
-        """品牌/仓库 token 归一：{{BRAND}} / {{REPO}} / {{REPO_CLONE}}。"""
-        return t.replace("{{BRAND}}", BRAND).replace("{{REPO_CLONE}}", REPO_CLONE).replace("{{REPO}}", REPO)
+        """品牌/仓库/评测平台 token 归一：{{BRAND}} / {{REPO}} / {{REPO_CLONE}} / {{EVALDECK_URL}}。"""
+        return (t.replace("{{BRAND}}", BRAND)
+                 .replace("{{REPO_CLONE}}", REPO_CLONE)
+                 .replace("{{REPO}}", REPO)
+                 .replace("{{EVALDECK_URL}}", EVALDECK_URL))
 
     def wrap(slug: str, title: str, desc: str, frag: str, nav_active: str | None) -> str:
         title, desc = brandify(title), brandify(desc)

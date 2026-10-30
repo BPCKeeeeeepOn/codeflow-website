@@ -67,8 +67,8 @@
   {
    "slug": "agent-community",
    "file": "agent-community",
-   "title": "Agent 社区 · 技能集市 · {{BRAND}}",
-   "desc": "把一线运维的排查经验变成人人可导入的技能：官方 8 技能、社区种子、贡献三步与真实效果数据。",
+   "title": "Agent 评测 · {{BRAND}}",
+   "desc": "Agent 评测平台：11 个预置评估器（Judge / Code / Human）、轨迹断言 DSL、实验门禁、成本中心与 stale 传播——评测结论可信、可复现、可进 CI。",
    "nav": "main"
   },
   {

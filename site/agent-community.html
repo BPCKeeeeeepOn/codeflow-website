@@ -5,12 +5,12 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Agent 社区 · 技能集市 · TestOps</title>
-<meta name="description" content="把一线运维的排查经验变成人人可导入的技能：官方 8 技能、社区种子、贡献三步与真实效果数据。">
+<title>Agent 评测 · TestOps</title>
+<meta name="description" content="Agent 评测平台：11 个预置评估器（Judge / Code / Human）、轨迹断言 DSL、实验门禁、成本中心与 stale 传播——评测结论可信、可复现、可进 CI。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e0f11'/%3E%3Cpath d='M5 17h5l3-7 4 13 3-9 2 3h5' stroke='%23f5f5f7' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='25' cy='17' r='2.4' fill='%232383e2'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="/assets/site.css?v=dfd7787a">
-<meta property="og:title" content="Agent 社区 · 技能集市 · TestOps">
-  <meta property="og:description" content="把一线运维的排查经验变成人人可导入的技能：官方 8 技能、社区种子、贡献三步与真实效果数据。">
+<meta property="og:title" content="Agent 评测 · TestOps">
+  <meta property="og:description" content="Agent 评测平台：11 个预置评估器（Judge / Code / Human）、轨迹断言 DSL、实验门禁、成本中心与 stale 传播——评测结论可信、可复现、可进 CI。">
   <meta property="og:type" content="website">
   <meta property="og:image" content="/assets/og/og-home.jpg">
   <meta property="og:image:width" content="1200">
@@ -34,7 +34,7 @@
       <a href="/evidence.html" data-nav="evidence">证据链</a>
       <a href="/deploy.html" data-nav="deploy">部署</a>
       <a href="/learn.html" data-nav="learn">学习学院</a>
-      <a href="/agent-community.html" data-nav="agent-community">Agent 社区</a>
+      <a href="/agent-community.html" data-nav="agent-community">Agent 评测</a>
       <a href="/oss-hub.html" data-nav="oss-hub">开源专区</a>
       <a href="/index.html#faq" data-nav="faq">FAQ</a>
     </nav>
@@ -52,131 +52,30 @@
   </div>
 </header>
 <main>
-<div class="wrap">
-<section class="hero" style="padding:64px 0 40px">
-  <span class="eyebrow">Agent 社区 · 技能集市</span>
-  <h1 style="font-size:clamp(1.8rem,3.4vw,2.7rem)">把一线运维的排查经验，<br>变成人人可导入的技能。</h1>
-  <p class="lede">每个技能是一份 SKILL.md：写清适用场景、只读取证步骤与边界。在平台里粘贴 GitHub 链接即可导入——不需要写代码，但需要<strong>真的排查过</strong>。</p>
-</section>
-
-<div class="com-tabs" role="tablist" aria-label="技能轨道">
-  <button class="com-tab active" data-track="community" role="tab" aria-selected="true">社区技能 <em>8</em></button>
-  <button class="com-tab" data-track="official" role="tab" aria-selected="false">官方技能 <em>8</em></button>
-  <button class="com-tab" data-track="recipes" role="tab" aria-selected="false">集成配方 <em>征集</em></button>
-</div>
-
-<div class="com-track" id="track-community">
-  <div class="skill-grid">
-      <div class="skill-card">
-        <div class="s-h"><b>cert-chain-checkup</b><span class="community-tag">社区种子</span></div>
-        <p class="s-d">证书告警分两种：快到期和链不完整。排查路径完全不同，别拿续期解决信任链问题。</p>
-        <div class="s-tags"><span class="tag">https-cert</span><span class="tag">探活失败</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 2 条只读命令</span></div>
-        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
-      </div>
-      <div class="skill-card">
-        <div class="s-h"><b>disk-inode-exhaust</b><span class="community-tag">社区种子</span></div>
-        <p class="s-d">df 还有空间但写入报错，八成是 inode 耗尽。定位小文件目录，而不是急着重启。</p>
-        <div class="s-tags"><span class="tag">disk.*.percent</span><span class="tag">disk.inode.*</span><span class="tag">写入失败</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 4 条只读命令</span></div>
-        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
-      </div>
-      <div class="skill-card">
-        <div class="s-h"><b>failed-unit-storm</b><span class="community-tag">社区种子</span></div>
-        <p class="s-d">服务反复重启往往不是服务自己的问题。先拉 failed 单元清单，再用 journalctl 找第一现场。</p>
-        <div class="s-tags"><span class="tag">服务不可用</span><span class="tag">探活失败</span><span class="tag">业务端口</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 3 条只读命令</span></div>
-        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
-      </div>
-      <div class="skill-card">
-        <div class="s-h"><b>mysql-conn-pool-exhaust</b><span class="community-tag">社区种子</span></div>
-        <p class="s-d">连接数打满不一定是要加 max_connections：先看 processlist 里谁在占、有没有 sleep 堆积，再判断是泄漏还是容量。</p>
-        <div class="s-tags"><span class="tag">mysql.*</span><span class="tag">连接数</span><span class="tag">连接池</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 4 条只读命令</span></div>
-        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
-      </div>
-      <div class="skill-card">
-        <div class="s-h"><b>nginx-502-troubleshoot</b><span class="community-tag">社区种子</span></div>
-        <p class="s-d">502/504 三连查：本机端口还听不听 → 上游通不通 → nginx 日志怎么说。先分清"挂了"还是"慢了"，再谈改配置。</p>
-        <div class="s-tags"><span class="tag">nginx.*</span><span class="tag">探活失败</span><span class="tag">502</span><span class="tag">业务HTTP</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 5 条只读命令</span></div>
-        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
-      </div>
-      <div class="skill-card">
-        <div class="s-h"><b>redis-memory-pressure</b><span class="community-tag">社区种子</span></div>
-        <p class="s-d">内存告警先看碎片率与淘汰策略是否匹配，再谈大键。改 maxmemory 之前先回答"内存花在哪了"。</p>
-        <div class="s-tags"><span class="tag">redis.*</span><span class="tag">mem.*</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 3 条只读命令</span></div>
-        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
-      </div>
-      <div class="skill-card">
-        <div class="s-h"><b>tcp-timewait-storm</b><span class="community-tag">社区种子</span></div>
-        <p class="s-d">TIME_WAIT 堆积是高频短连接的信号。先数清楚分布，再看是哪个调用方在疯狂建连。</p>
-        <div class="s-tags"><span class="tag">net.tcp.*</span><span class="tag">连接异常</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 3 条只读命令</span></div>
-        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
-      </div>
-      <div class="skill-card">
-        <div class="s-h"><b>time-drift-check</b><span class="community-tag">社区种子</span></div>
-        <p class="s-d">时间漂移会污染取证时间窗与告警时刻。接入前查一次，排查跨机日志前再查一次。</p>
-        <div class="s-tags"><span class="tag">主机离线</span><span class="tag">时间窗</span><span class="tag">跨机对齐</span></div>
-        <div class="skill-metrics"><span class="insufficient">效果数据：样本不足（新收录） · 1 条只读命令</span></div>
-        <div class="import-cmd">导入：平台 → 技能管理 → GitHub 导入</div>
-      </div>
-    </div>
-</div>
-
-<div class="com-track" id="track-official" hidden>
-  <div class="official-rows">
-    <div class="official-row"><div class="o-h"><b>core-investigation</b><span class="verified">官方 · 核心方法论</span></div><p>通用故障调查方法论：假设驱动、证伪优先、症状不是根因。</p><div class="o-scope">随每次诊断常驻注入</div></div>
-    <div class="official-row"><div class="o-h"><b>core-safety</b><span class="verified">官方 · 核心方法论</span></div><p>只读优先与变更纪律：没验证过的修复不建议，危险命令一律不执行。</p><div class="o-scope">随每次诊断常驻注入</div></div>
-    <div class="official-row"><div class="o-h"><b>core-reporting</b><span class="verified">官方 · 核心方法论</span></div><p>报告写作规范：结论在前、证据在后、诚实标注不确定性与未检查项。</p><div class="o-scope">随每次诊断常驻注入</div></div>
-    <div class="official-row"><div class="o-h"><b>disk-troubleshoot</b><span class="verified">官方</span></div><p>磁盘问题专项：水位、inode、IO 三条线分开查。</p><div class="o-scope">触发：disk.*, 磁盘, inode</div></div>
-    <div class="official-row"><div class="o-h"><b>host-health-diagnose</b><span class="verified">官方</span></div><p>主机健康综合排查：CPU / 内存 / 负载联动判断。</p><div class="o-scope">触发：cpu.*, mem.*, load.*</div></div>
-    <div class="official-row"><div class="o-h"><b>metric-analysis</b><span class="verified">官方</span></div><p>指标分析方法论：窗口、基线与异常点的关系。</p><div class="o-scope">触发：metric, 指标, cpu.*, mem.*</div></div>
-    <div class="official-row"><div class="o-h"><b>log-search</b><span class="verified">官方</span></div><p>日志检索路径：时间窗优先于行数，关键词定位如实标注。</p><div class="o-scope">触发：日志, journal, error, oom</div></div>
-    <div class="official-row"><div class="o-h"><b>case-recall</b><span class="verified">官方</span></div><p>案例检索：相似故障先查历史，复用已验证的处置。</p><div class="o-scope">触发：案例, 复盘, 历史</div></div>
+<style>
+.eval-embed{position:fixed;top:0;left:0;width:100vw;height:100vh;border:0;z-index:9999;background:var(--bg)}
+.eval-overlay{position:fixed;inset:0;z-index:9998;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.eval-overlay .brand{font-size:22px;font-weight:700;letter-spacing:-.02em}
+.eval-overlay .sub{color:var(--muted);font-size:14px;max-width:480px;text-align:center;line-height:1.6}
+.eval-overlay . feats{display:flex;gap:20px;margin:10px 0}
+.eval-overlay .feat{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text)}
+.eval-overlay .feat svg{width:15px;height:15px;color:var(--pass)}
+</style>
+<!-- EvalDeck 全量评测平台：iframe 嵌入，全能力可用 -->
+<div class="eval-overlay" id="evalLoading">
+  <div class="brand">Agent 评测平台</div>
+  <div class="sub">11 个预置评估器 · 轨迹断言 DSL · 实验门禁 · 成本中心 · stale 传播</div>
+  <div class="feats">
+    <div class="feat"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8.5l3 3 7-7"/></svg>Agent-as-a-Judge</div>
+    <div class="feat"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8.5l3 3 7-7"/></svg>DSL 七算子</div>
+    <div class="feat"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8.5l3 3 7-7"/></svg>实验门禁</div>
+    <div class="feat"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8.5l3 3 7-7"/></svg>成本可见</div>
   </div>
+  <div class="faint" style="font-size:12px">正在加载评测平台…</div>
 </div>
-
-<div class="com-track" id="track-recipes" hidden>
-  <div class="official-rows">
-    <div class="official-row"><div class="o-h"><b>postgres_exporter 白名单</b><span class="community-tag">配方 · 征集中</span></div><p>476 个指标里挑哪 20 个进平台？一份开箱可用的 metric_keep 正则清单。</p><div class="o-scope">数据源配置 · metric_keep</div></div>
-    <div class="official-row"><div class="o-h"><b>MCP 客户端接入</b><span class="community-tag">配方 · 征集中</span></div><p>把平台只读工具接进你自己的 Agent：开启 /mcp、鉴权与工具清单。</p><div class="o-scope">POST /mcp · 默认关闭</div></div>
-    <div class="official-row"><div class="o-h"><b>通知渠道 recipes</b><span class="community-tag">配方 · 征集中</span></div><p>飞书加签 / 钉钉机器人 / 通用 Webhook 的 apprise URL 模板与避坑参数。</p><div class="o-scope">apprise 透传 · 危险 scheme 已拦</div></div>
-    <div class="official-row"><div class="o-h"><b>你的配方</b><span class="community-tag">虚位以待</span></div><p>把你调通过的 exporter / 渠道 / Agent 集成写成配方，分享给所有人。</p><div class="o-scope">提 Issue 提案</div></div>
-  </div>
-</div>
-
-<div class="contrib">
-  <div class="contrib-steps">
-    <h3>贡献一个技能，只要三步</h3>
-    <div class="cstep"><span class="n">1</span><div class="t"><b>提案</b><p>开一个 Issue：讲清这个场景为什么值得一个技能——适用范围 + 一个你真实排查过的故障故事。</p></div></div>
-    <div class="cstep"><span class="n">2</span><div class="t"><b>起草</b><p>按 SKILL.md 模板写：frontmatter（适用告警范围 + 只读命令）+ 何时用 / 动作 / 边界三段。命令必须全部只读。</p></div></div>
-    <div class="cstep"><span class="n">3</span><div class="t"><b>验证合并</b><p>附一个可复现的触发场景（平台自带的 5 种故障注入脚本即可），维护者真机跑通后合并进月度收录。</p></div></div>
-    <p style="font-size:.8rem;color:var(--muted);margin-top:14px">合并 30 天后开始累计真实效果数据：加载次数、跟进率、Token 中位数——你的技能有没有用，数字说话。</p>
-  </div>
-  <div class="contrib-wall">
-    <div>
-      <div class="cw-h">贡献者墙 · 虚位以待</div>
-      <p class="cw-d">还没有社区贡献者。<br><b>第一个把自己的排查经验写成技能的人，写在这里。</b></p>
-    </div>
-  </div>
-</div>
-
-<div class="leaderboard">
-  <span class="lb-cup"><svg width="19" height="19" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3.5 1.5a1 1 0 0 0-1 1V4a4.5 4.5 0 0 0 3.6 4.41 2.5 2.5 0 0 0 1.4 1.4v1.69H5.75a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5H8.5V9.81a2.5 2.5 0 0 0 1.4-1.4A4.5 4.5 0 0 0 13.5 4V2.5a1 1 0 0 0-1-1h-9ZM4 4V3h8v1a3 3 0 0 1-1.9 2.79A2.5 2.5 0 0 0 8 5.5c-.66 0-1.26.26-1.7.68A3 3 0 0 1 4 4Zm4 .5a1 1 0 0 1 1 1 3 3 0 0 1-.55 1.73A1 1 0 0 1 8 9.5a1 1 0 0 1-.45-.27A3 3 0 0 1 7 5.5a1 1 0 0 1 1-1Z"/></svg></span>
-  <div>
-    <div class="lb-t">月度效果榜 · 每月随《AI 运维月报》发布</div>
-    <div class="lb-d">按真实加载次数 × 跟进率排社区技能 Top 5。<b style="color:var(--text)">本期样本不足，暂不排名</b>——数字够的时候自然会出现在这里，不够的时候我们直说。</div>
-  </div>
-</div>
-
-<div class="safety-bar">
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--pass)" stroke-width="1.6" aria-hidden="true"><path d="M8 1.5 13.5 4v4c0 3.2-2.3 5.6-5.5 6.5C4.8 13.6 2.5 11.2 2.5 8V4L8 1.5Z"/><path d="M5.8 8 7.4 9.6 10.4 6.6"/></svg>
-  <p><b>安全前置，不是事后补救。</b>所有社区技能的命令都会经过平台只读白名单与九道护栏校验，禁用清单硬边界不可越过；技能授权的命令仅在本次诊断会话内生效，会话结束即失效。</p>
-</div>
-</div>
+<iframe class="eval-embed" src="http://127.0.0.1:8902/"
+        onload="document.getElementById('evalLoading').style.display='none'"
+        title="Agent 评测平台" allow="clipboard-write"></iframe>
 
 </main>
 <footer>
@@ -215,7 +114,7 @@
       </div>
       <div class="foot-col">
         <h4>开源</h4>
-        <a href="https://github.com/qsumm/TestOps">GitHub 仓库</a><a href="https://github.com/qsumm/TestOps/issues">问题反馈</a><a href="/agent-community.html">贡献指南</a><a href="/about.html#join">安全通告</a><a href="/open-source.html">源码结构</a>
+        <a href="https://github.com/qsumm/TestOps">GitHub 仓库</a><a href="https://github.com/qsumm/TestOps/issues">问题反馈</a><a href="/agent-community.html">Agent 评测</a><a href="/about.html#join">安全通告</a><a href="/open-source.html">源码结构</a>
       </div>
       <div class="foot-col">
         <h4>关于</h4>

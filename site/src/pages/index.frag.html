@@ -386,13 +386,48 @@
 </section>
 </div>
 
-<!-- ═══════ Agent 社区 · 技能集市 ═══════ -->
+<!-- ═══════ Agent 评测 ═══════ -->
 <div class="wrap">
-<section id="agent-community">
+<section id="agent-eval">
   <div class="sec-head">
-    <div class="sec-kicker">Agent 社区 · 技能集市</div>
-    <h2>把一线运维的排查经验，变成人人可导入的技能</h2>
-    <p>每个技能是一份 SKILL.md：写清适用场景、只读取证步骤与边界。在平台里粘贴 GitHub 链接即可导入——不需要写代码，但需要<strong style="color:var(--text)">真的排查过</strong>。</p>
+    <div class="sec-kicker">Agent 评测</div>
+    <h2>Agent 评测平台——不只是看指标，是真的评</h2>
+    <p>11 个预置评估器 · 轨迹断言 DSL 七算子 · 实验门禁 · 成本中心 · stale 传播——每次评测都知道花了多少钱、哪个评估器最准。</p>
+    <div style="margin-top:14px"><a class="btn btn-primary" href="/agent-community.html">进入评测平台 →</a></div>
+  </div>
+
+  <div class="official-rows" style="margin-top:22px">
+    <div class="official-row">
+      <div class="o-h"><b>Agent-as-a-Judge</b></div>
+      <p>11 个预置评估器：LLM-as-judge 走真模型调用（OpenAI / Anthropic 双协议），Code 评估器在沙箱内执行，Human 标注产出同一结果形状。</p>
+      <div class="o-scope">Judge · Code · Human</div>
+    </div>
+    <div class="official-row">
+      <div class="o-h"><b>轨迹断言 DSL</b></div>
+      <p>七算子 + assert-set 嵌套 + not- 取反，把「预期路径」写成可执行断言，而不是事后人工打分。</p>
+      <div class="o-scope">七算子 · 嵌套 · 取反</div>
+    </div>
+    <div class="official-row">
+      <div class="o-h"><b>实验门禁</b></div>
+      <p>多组对照跑分，门禁 API 直接返回「采纳 / 回退」结论——评测结论能挡住发布，不只是给人看。</p>
+      <div class="o-scope">多组对照 · 门禁 API</div>
+    </div>
+    <div class="official-row">
+      <div class="o-h"><b>成本与 stale 传播</b></div>
+      <p>每次评测的 token 与花费入账；迟到 trace 到达后旧结论自动作废，看板分数恒定剔除 stale。</p>
+      <div class="o-scope">成本中心 · stale 传播</div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ═══════ 技能集市 ═══════ -->
+<div class="wrap">
+<section id="skills-market">
+  <div class="sec-head">
+    <div class="sec-kicker">技能集市</div>
+    <h2>把排查经验写成技能，让别人直接复用</h2>
+    <p>三轨技能目录：官方 8 个已验证方法论 · 社区种子 8 个 · 集成配方征集中。命令全部只读，过平台白名单与九道护栏。</p>
   </div>
 
   <div class="com-tabs" role="tablist" aria-label="技能轨道">
