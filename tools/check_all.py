@@ -123,6 +123,12 @@ def g09() -> None:
             hits.append(f"竞品名:{c}")
     if re.search(r"\bKeep\b", t):
         hits.append("竞品名:Keep")
+    # 部署目标主机豁免（显式且窄口径）：官网必须指向评测平台地址，该主机是**唯一**允许出现的
+    # 公网 IP；其余公网 IP 一律仍禁。先把该主机替换掉再扫，避免整条规则被豁免。
+    _dep = evaldeck_url()
+    _m = re.search(r"\b(\d{1,3}(?:\.\d{1,3}){3})\b", _dep)
+    if _m:
+        t = t.replace(_m.group(1), "DEPLOY_TARGET_HOST")
     for pat, label in [(r"sk-[A-Za-z0-9_-]{20,}", "密钥形态"), (r"LTAI[A-Za-z0-9]{12,}", "密钥形态"),
                        (r"AKID[A-Za-z0-9]{10,}", "密钥形态"), (r"AccessKeySecret\s*[:=]\s*\S{12,}", "密钥形态"),
                        (r"1[3-9]\d{9}", "手机号"), (r"(?<![\d.])(?!127\.|10\.|192\.168\.|0\.0\.0\.0)(?:\d{1,3}\.){3}\d{1,3}(?=:)", "公网IP")]:
@@ -210,10 +216,21 @@ def g15() -> None:
 
 
 # ── G16 Agent 评测页 = EvalDeck 全量嵌入 ──
+def evaldeck_url() -> str:
+    """评测平台地址：环境变量优先，其次仓内 config.json（与构建器同源，避免两处漂移）。"""
+    env = os.environ.get("EVALDECK_URL", "").strip()
+    if env:
+        return env
+    cfg = SRC / "config.json"
+    if cfg.exists():
+        return json.loads(cfg.read_text(encoding="utf-8")).get("evaldeck_url", "").strip()
+    return ""
+
+
 def g16() -> None:
     """Agent 评测页 = EvalDeck 全量嵌入（iframe + 品牌加载态 + 四能力标记 + token 已替换）。"""
     s = (SITE / "agent-community.html").read_text(encoding="utf-8")
-    url = os.environ.get("EVALDECK_URL", "http://127.0.0.1:8902/").rstrip("/")
+    url = evaldeck_url().rstrip("/")
     checks = [
         ("iframe 嵌入", 'class="eval-embed"' in s and url in s),
         ("品牌加载态", "eval-overlay" in s and "Agent 评测平台" in s),

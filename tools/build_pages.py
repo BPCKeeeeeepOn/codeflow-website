@@ -23,10 +23,12 @@ BRAND = "TestOps"
 #           站内一律用新地址，避免依赖重定向（D21）。
 REPO = "https://github.com/qsumm/TestOps"
 REPO_CLONE = f"{REPO}.git"
-# 评测平台（EvalDeck）地址：源文件里写 {{EVALDECK_URL}}，改这里即全站生效。
-# 本地档指向本机 8902 端口；生产部署时用环境变量 EVALDECK_URL 覆盖为对外域名，
-# 不必改源文件（官网与评测平台分进程部署，跨域由平台侧放行 frame-ancestors）。
-EVALDECK_URL = os.environ.get("EVALDECK_URL", "http://127.0.0.1:8902/")
+# 评测平台（EvalDeck）地址：源文件里写 {{EVALDECK_URL}}，改 site/src/config.json 即全站生效。
+# 默认值在仓内 config.json（提交入库）——构建结果因此不依赖调用环境，守卫 G01（幂等）才稳定；
+# 临时换地址可用环境变量 EVALDECK_URL 覆盖（例：本地指回 127.0.0.1:8902）。
+_SITE_CFG = json.loads((ROOT / "site" / "src" / "config.json").read_text(encoding="utf-8"))
+EVALDECK_URL = (os.environ.get("EVALDECK_URL") or _SITE_CFG.get("evaldeck_url")
+                 or "http://127.0.0.1:8902/").strip()
 
 # ───────────────────────── 数据钩子 ─────────────────────────
 
