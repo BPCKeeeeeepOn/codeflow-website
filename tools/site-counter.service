@@ -1,0 +1,13 @@
+[Unit]
+Description=CodeFlow site counter (PV stats, stdlib+SQLite)
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/python3.11 /opt/site-counter/site_counter.py
+WorkingDirectory=/opt/site-counter
+Restart=always
+RestartSec=5
+MemoryMax=32M
+
+[Install]
+WantedBy=multi-user.target

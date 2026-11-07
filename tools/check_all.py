@@ -384,8 +384,20 @@ def g22() -> None:
     g("G22", not bad, "; ".join(bad[:4]))
 
 
+# ── G23 浏览量统计接线（自建计数服务，零第三方脚本） ──
+def g23() -> None:
+    bad = []
+    idx = (SITE / "index.html").read_text(encoding="utf-8")
+    js = (SITE / "assets" / "site.js").read_text(encoding="utf-8")
+    if 'id="pv-total"' not in idx or 'id="pv-uv"' not in idx:
+        bad.append("页脚缺计数展示位")
+    if "/api/counter/hit" not in js:
+        bad.append("site.js 缺计数上报")
+    g("G23", not bad, "; ".join(bad))
+
+
 def main() -> int:
-    for fn in (g01, g03, g04, g05, g06, g07, g08, g09, g10, g11, g12, g13, g14, g15, g16, g17, g18, g19, g20, g21, g22):
+    for fn in (g01, g03, g04, g05, g06, g07, g08, g09, g10, g11, g12, g13, g14, g15, g16, g17, g18, g19, g20, g21, g22, g23):
         try:
             fn()
         except Exception as e:  # noqa: BLE001

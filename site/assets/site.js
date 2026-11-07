@@ -53,3 +53,17 @@
     w.classList.toggle("wx-contact--away", es[0].isIntersecting);
   }, { rootMargin: "0px 0px -40px 0px" }).observe(f);
 })();
+
+// 浏览量统计：自建计数服务（同源 /api/counter/，nginx 反代），失败静默不影响页面
+(function () {
+  try {
+    fetch("/api/counter/hit?path=" + encodeURIComponent(location.pathname))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var t = document.getElementById("pv-total");
+        var u = document.getElementById("pv-uv");
+        if (t && d.total != null) t.textContent = Number(d.total).toLocaleString();
+        if (u && d.visitors != null) u.textContent = Number(d.visitors).toLocaleString();
+      }).catch(function () {});
+  } catch (e) {}
+})();
