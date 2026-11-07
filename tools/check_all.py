@@ -391,6 +391,8 @@ def g23() -> None:
     js = (SITE / "assets" / "site.js").read_text(encoding="utf-8")
     if 'id="pv-total"' not in idx or 'id="pv-uv"' not in idx:
         bad.append("页脚缺计数展示位")
+    if 'id="pv-hero"' not in idx:
+        bad.append("首页 hero 缺显眼计数卡")
     if "/api/counter/hit" not in js:
         bad.append("site.js 缺计数上报")
     g("G23", not bad, "; ".join(bad))

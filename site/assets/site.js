@@ -60,10 +60,14 @@
     fetch("/api/counter/hit?path=" + encodeURIComponent(location.pathname))
       .then(function (r) { return r.json(); })
       .then(function (d) {
-        var t = document.getElementById("pv-total");
-        var u = document.getElementById("pv-uv");
-        if (t && d.total != null) t.textContent = Number(d.total).toLocaleString();
-        if (u && d.visitors != null) u.textContent = Number(d.visitors).toLocaleString();
+        var set = function (id, v) {
+          var el = document.getElementById(id);
+          if (el && v != null) el.textContent = Number(v).toLocaleString();
+        };
+        set("pv-total", d.total);
+        set("pv-uv", d.visitors);
+        set("pv-hero", d.total);
+        set("pv-hero-uv", d.visitors);
       }).catch(function () {});
   } catch (e) {}
 })();
