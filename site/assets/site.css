@@ -636,15 +636,11 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
   .flow{animation:none}
 }
 
-/* ═══════ 浏览量实时胶囊（hero 显眼位） ═══════ */
-.pv-pill{display:inline-flex;align-items:center;gap:12px;margin-top:24px;
-  padding:10px 18px;border:1px solid var(--border-strong);border-radius:999px;
-  background:var(--surface);box-shadow:var(--shadow-card)}
-.pv-dot{position:relative;width:8px;height:8px;border-radius:50%;background:var(--pass);flex:none}
-.pv-dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;
-  border:2px solid var(--pass);opacity:.5;animation:pv-ping 2s ease-out infinite}
-.pv-label{font-size:.78rem;color:var(--muted);letter-spacing:.04em}
-.pv-num{font-family:var(--font-mono);font-size:1.18rem;font-weight:700;color:var(--accent);
-  font-variant-numeric:tabular-nums;line-height:1;border-left:1px solid var(--border-strong);padding-left:12px}
-@keyframes pv-ping{0%{transform:scale(.6);opacity:.6}80%,100%{transform:scale(1.6);opacity:0}}
-@media (prefers-reduced-motion: reduce){.pv-dot::after{animation:none;opacity:.3}}
+/* ═══════ 浏览量徽章（hero 顶部，克制专业风） ═══════ */
+.pv-pill{display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;border:1px solid var(--border);border-radius:999px;
+  background:var(--accent-weak)}
+.pv-icon{color:var(--muted);flex:none}
+.pv-label{font-size:.75rem;color:var(--muted);letter-spacing:.06em}
+.pv-num{font-family:var(--font-mono);font-size:.88rem;font-weight:620;color:var(--text);
+  font-variant-numeric:tabular-nums;line-height:1}
