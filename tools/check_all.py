@@ -9,6 +9,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
+# 产品仓根目录：与生成器同一套环境变量约定（同事克隆到同级目录即可，无需改代码）
+import os as _os
+PRODUCT_ROOT = _os.environ.get("TESTOPS_PRODUCT_ROOT", str(ROOT.parent / "aiops-platform"))
 SRC = SITE / "src"
 REG = json.loads((SRC / "pages.json").read_text(encoding="utf-8"))
 PAGES = REG["pages"]
@@ -254,7 +257,7 @@ def g16() -> None:
 
 # ── G17 学习目录 = 源文件数 ──
 def g17() -> None:
-    prod = Path("/Users/summer/aiops-platform")
+    prod = Path(PRODUCT_ROOT)
     counts = {
         "aiops": len([p for p in (prod / "learning" / "aiops").glob("*.md") if p.name != "README.md"]),
         "sre": len([p for p in (prod / "learning" / "sre-basics").glob("*.md") if p.name != "README.md"]),
@@ -273,7 +276,7 @@ def g17() -> None:
 
 # ── G18 版本与命令对账 ──
 def g18() -> None:
-    prod = Path("/Users/summer/aiops-platform")
+    prod = Path(PRODUCT_ROOT)
     ver = (prod / "VERSION").read_text(encoding="utf-8").strip()
     about = (SITE / "testops" / "about.html").read_text(encoding="utf-8")
     ok_v = ver in about

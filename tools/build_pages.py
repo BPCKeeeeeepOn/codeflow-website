@@ -13,7 +13,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 SRC = SITE / "src"
-PRODUCT = Path("/Users/summer/aiops-platform")
+# 产品仓只读引用（教程/学习内容/版本对账）。默认取本仓同级目录，环境变量可覆盖：
+#   export TESTOPS_PRODUCT_ROOT=/path/to/aiops-platform
+#   export CODEFLOW_PRODUCT_ROOT=/path/to/AINative
+PRODUCT = Path(os.environ.get(
+    "TESTOPS_PRODUCT_ROOT", str(ROOT.parent / "aiops-platform")))
 
 # ── 品牌与仓库：单一事实源（家族站：CodeFlow 主品牌 + TestOps 子站） ──
 # 主品牌：站内所有可见文字（标题/导航/页脚/正文/OG/文档）统一由此派生，
@@ -27,7 +31,7 @@ TESTOPS_BRAND = "TestOps"
 TESTOPS_REPO = "https://github.com/qsumm/TestOps"
 TESTOPS_REPO_CLONE = f"{TESTOPS_REPO}.git"
 # CodeFlow 产品仓（只读引用：VERSION）。
-CF_PRODUCT = Path("/Users/summer/AINative")
+CF_PRODUCT = Path(os.environ.get("CODEFLOW_PRODUCT_ROOT", str(ROOT.parent / "AINative")))
 # 评测平台（EvalDeck）地址：源文件里写 {{EVALDECK_URL}}，改 site/src/config.json 即全站生效。
 # 默认值在仓内 config.json（提交入库）——构建结果因此不依赖调用环境，守卫 G01（幂等）才稳定；
 # 临时换地址可用环境变量 EVALDECK_URL 覆盖（例：本地指回 127.0.0.1:8902）。

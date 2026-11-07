@@ -26,12 +26,20 @@ pip install -r requirements-website.txt
 python3 server.py            # → http://127.0.0.1:8899
 ```
 
+## 环境要求（同事上手）
+
+- Python ≥ 3.10（构建与守卫）；Node.js 可选（守卫 G14 做 JS 语法检查）
+- **姊妹产品仓**：构建器从产品仓只读引用教程/学习文章/版本号。把
+  `aiops-platform`（TestOps 产品）克隆到**本仓同级目录**即可；路径不同用环境变量覆盖：
+  `TESTOPS_PRODUCT_ROOT=/path/to/aiops-platform`、`CODEFLOW_PRODUCT_ROOT=/path/to/AINative`
+- 守卫 G09 的本地禁用词表（`~/.config/aiops-oss/banned_local.txt`）可选，缺省跳过
+
 ## 开发流程
 
 ```bash
 python3 tools/build_pages.py         # 改 site/src/ 后重建全部产物
 python3 tools/build_pages.py --check # 校验产物与源一致（CI gate）
-python3 tools/check_all.py           # 21 项机械守卫
+python3 tools/check_all.py           # 22 项机械守卫
 
 ## 目录
 
