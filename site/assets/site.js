@@ -65,9 +65,7 @@
           if (el && v != null) el.textContent = Number(v).toLocaleString();
         };
         set("pv-total", d.total);
-        set("pv-uv", d.visitors);
         set("pv-hero", d.total);
-        set("pv-hero-uv", d.visitors);
       }).catch(function () {});
   } catch (e) {}
 })();
