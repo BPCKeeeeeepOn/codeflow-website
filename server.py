@@ -20,7 +20,7 @@ from fastapi.staticfiles import StaticFiles
 BASE = Path(__file__).resolve().parent
 SITE = BASE / "site"
 
-app = FastAPI(title="TestOps 官网", docs_url=None, redoc_url=None)
+app = FastAPI(title="CodeFlow 官网（含 TestOps 子站）", docs_url=None, redoc_url=None)
 
 
 @app.get("/api/health")
@@ -30,7 +30,7 @@ async def health() -> JSONResponse:
     return JSONResponse({
         "status": "up" if index.exists() else "degraded",
         "site": str(SITE),
-        "pages": len(list(SITE.glob("*.html"))),
+        "pages": len(list(SITE.rglob("*.html"))),
     })
 
 

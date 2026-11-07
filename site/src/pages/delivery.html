@@ -1,0 +1,88 @@
+<div class="wrap">
+<section class="hero" style="padding:64px 0 40px">
+  <span class="eyebrow">真实交付 · 差异化核心</span>
+  <h1 style="font-size:clamp(1.8rem,3.4vw,2.7rem)">交付不是纸面文档，<br>是可运行的真实代码。</h1>
+  <p class="lede">本页记录两条业务闭环在<strong>真实系统</strong>的完整实测：真实禅道 18.10、真实模型通道（claude CLI + MiMo）、真实 git 仓库。执行全部交给平台与数字员工，人只做需求澄清与验收。所有数字可复现，原始报告在开源仓库 docs/18。</p>
+</section>
+
+<section class="tight">
+  <div class="sec-head"><div class="sec-kicker">闭环总览</div>
+  <h2 style="font-size:1.5rem">两条业务闭环，全部走通并回写验证</h2></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>闭环</th><th>源头对象</th><th>执行结果</th><th>回写验证</th></tr></thead>
+      <tbody>
+        <tr><td>需求开发</td><td>禅道 story「会员登录页新增记住我功能」</td><td class="yes">4 步 SDLC 全过 · 交付物 5 个 · dispatch SUCCEEDED</td><td class="yes">story 关键字含交付备注，集成账号在位</td></tr>
+        <tr><td>缺陷修复</td><td>禅道 bug「记住我勾选后刷新状态丢失」</td><td class="yes">4 步 SDLC 全过 · 52 分钟编码 · 工单流转「已关闭」</td><td class="yes">bug 描述追加修复报告，幂等 marker 在位</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="tight">
+  <div class="sec-head"><div class="sec-kicker">最硬的证据</div>
+  <h2 style="font-size:1.5rem">数字员工自主定位真实仓库，自建分支写代码</h2></div>
+  <p style="max-width:52em;margin-bottom:16px">修缺陷的派单中，数字员工自主定位到真实 git 仓库，自建分支 <code style="font-family:var(--font-mono)">feat/10007-remember-me</code>，在仓库内完整实现了记住我功能，并随分支推送：</p>
+  <div class="term">
+    <div class="term-bar"><span class="tl"><i></i><i></i><i></i></span><span>交付物清单（节选自实测记录）</span></div>
+    <div class="term-body">
+      <div>LoginPage ……………… 新增记住我逻辑（80 行）</div>
+      <div>RememberMeService … 新建服务类</div>
+      <div>测试类 ×3 ……………… 新增单元测试</div>
+      <div>分支 feat/10007-remember-me → 已推送远程</div>
+    </div>
+  </div>
+  <div class="stats" style="margin-top:18px">
+    <div class="stat">
+      <div class="stat-n">≤8<small>秒</small></div>
+      <div class="stat-l">工单创建到派发受理</div>
+      <div class="stat-src">dispatch.accepted 实测</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">12<small>分钟</small></div>
+      <div class="stat-l">4 步 SDLC 全流程跑完</div>
+      <div class="stat-src">含 19 个单元测试全过</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">40<small>秒</small></div>
+      <div class="stat-l">坏模型名如实 FAILED</div>
+      <div class="stat-src">不静默吞错，交回真人</div>
+    </div>
+  </div>
+</section>
+
+<section class="tight">
+  <div class="sec-head"><div class="sec-kicker">界面实录</div>
+  <h2 style="font-size:1.5rem">工单、澄清对话与交付总览</h2></div>
+  <figure style="margin:0 0 22px">
+    <img src="/assets/shots/codeflow-workitem.jpg" alt="CodeFlow 工单详情：交付进度跟踪" loading="lazy" style="width:100%;border-radius:10px;border:1px solid var(--border)">
+    <figcaption style="font-size:.78rem;color:var(--muted);margin-top:8px">工单详情：数字员工的交付进度逐步可见，可运行代码随分支推送</figcaption>
+  </figure>
+  <figure style="margin:0 0 22px">
+    <img src="/assets/shots/codeflow-clarify.jpg" alt="CodeFlow 需求澄清对话" loading="lazy" style="width:100%;border-radius:10px;border:1px solid var(--border)">
+    <figcaption style="font-size:.78rem;color:var(--muted);margin-top:8px">需求澄清对话：直接在工单里问，数字员工经平台 MCP 实时读取工单后作答与追问</figcaption>
+  </figure>
+  <figure style="margin:0">
+    <img src="/assets/shots/codeflow-overview.jpg" alt="CodeFlow 交付总览大盘" loading="lazy" style="width:100%;border-radius:10px;border:1px solid var(--border)">
+    <figcaption style="font-size:.78rem;color:var(--muted);margin-top:8px">交付总览：近期任务、交付吞吐与待处理工单一屏可见</figcaption>
+  </figure>
+</section>
+
+<section class="tight">
+  <div class="sec-head"><div class="sec-kicker">质量基线</div>
+  <h2 style="font-size:1.5rem">11,449 例测试全绿，缺陷在真实运行中暴露并修复</h2></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>测试域</th><th>规模</th><th>结果</th></tr></thead>
+      <tbody>
+        <tr><td>平台后端</td><td style="font-family:var(--font-mono)">7,670 例</td><td class="yes">0 失败</td></tr>
+        <tr><td>前端</td><td style="font-family:var(--font-mono)">3,738 例</td><td class="yes">全部通过</td></tr>
+        <tr><td>执行器 runtime</td><td style="font-family:var(--font-mono)">42 例</td><td class="yes">全部通过</td></tr>
+        <tr><td>E2E 暴露并修复</td><td>后端 9 处 · 回写通道 1 处 · runtime 2 处 · 前端 3 处</td><td class="yes">全部实测复现后修复</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:12px;font-size:.8rem;color:var(--muted)">测试策略：mock 只能验证管道，真模型才能验证产品——三个高优先级缺陷全部是真实运行才暴露的。双角色小队自动接棒实测通过，失败工单自动交回真人 assignee。</p>
+  <p style="margin-top:18px"><a class="btn btn-primary" href="/deploy.html">部署跑一遍</a> <a class="btn btn-ghost" href="{{REPO}}" target="_blank" rel="noopener" style="margin-left:8px">看开源仓库原始报告</a></p>
+</section>
+</div>

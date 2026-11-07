@@ -15,14 +15,19 @@ SITE = ROOT / "site"
 SRC = SITE / "src"
 PRODUCT = Path("/Users/summer/aiops-platform")
 
-# ── 品牌与仓库：单一事实源 ──
-# 品牌名：站内所有可见文字（标题/导航/页脚/正文/OG/文档）统一由此派生，
+# ── 品牌与仓库：单一事实源（家族站：CodeFlow 主品牌 + TestOps 子站） ──
+# 主品牌：站内所有可见文字（标题/导航/页脚/正文/OG/文档）统一由此派生，
 #        源文件里写 {{BRAND}}，改这里即全站生效（D21 品牌统一）。
-BRAND = "TestOps"
-# 仓库地址：GitHub 仓库已改名为 TestOps，qsumm/AIOps 走 GitHub 永久重定向；
-#           站内一律用新地址，避免依赖重定向（D21）。
-REPO = "https://github.com/qsumm/TestOps"
+BRAND = "CodeFlow"
+# 主仓库：CodeFlow（AI Native 研发交付平台）。
+REPO = "https://github.com/qsumm/CodeFlow"
 REPO_CLONE = f"{REPO}.git"
+# 子站品牌：TestOps（智能运维）整体迁至 /testops/ 子路径，源文件里写 {{TESTOPS_*}} token。
+TESTOPS_BRAND = "TestOps"
+TESTOPS_REPO = "https://github.com/qsumm/TestOps"
+TESTOPS_REPO_CLONE = f"{TESTOPS_REPO}.git"
+# CodeFlow 产品仓（只读引用：VERSION）。
+CF_PRODUCT = Path("/Users/summer/AINative")
 # 评测平台（EvalDeck）地址：源文件里写 {{EVALDECK_URL}}，改 site/src/config.json 即全站生效。
 # 默认值在仓内 config.json（提交入库）——构建结果因此不依赖调用环境，守卫 G01（幂等）才稳定；
 # 临时换地址可用环境变量 EVALDECK_URL 覆盖（例：本地指回 127.0.0.1:8902）。
@@ -160,7 +165,7 @@ def hook_tutorial_cards() -> str:
         cards.append(f"""      <div class="hub-item">
         <div class="h-t">{title} <small>{num}</small></div>
         <p class="h-d">{blurb}</p>
-        <div class="h-c"><a class="tag" style="text-decoration:none" href="/docs/tutorials/{num}.html">阅读 · {_read_minutes(body)} min</a></div>
+        <div class="h-c"><a class="tag" style="text-decoration:none" href="/testops/docs/tutorials/{num}.html">阅读 · {_read_minutes(body)} min</a></div>
       </div>""")
     return '<div class="hub-grid" style="grid-template-columns:repeat(3,1fr)">\n' + "\n".join(cards) + "\n  </div>"
 
@@ -177,6 +182,11 @@ def hook_deploy_commands() -> str:
 
 def hook_version() -> str:
     return (PRODUCT / "VERSION").read_text(encoding="utf-8").strip()
+
+
+def hook_cf_version() -> str:
+    """CodeFlow 平台版本（家族站首页 JSON-LD 用）。"""
+    return (CF_PRODUCT / "platform" / "ainative" / "VERSION").read_text(encoding="utf-8").strip()
 
 
 def hook_changelog_rows() -> str:
@@ -212,6 +222,7 @@ DOC_SHELL = """<div class="wrap">
     <aside class="doc-toc" id="doc-toc"></aside>
   </div>
 </div>
+</div>
 <script type="module">
   import {{ marked }} from '/assets/vendor/marked.esm.js';
   const box = document.getElementById('md-body');
@@ -242,42 +253,45 @@ DOC_SHELL = """<div class="wrap">
 
 
 def build_doc_pages() -> dict[str, tuple]:
-    """P3：教程 / 学习文章 / 题库的正文壳页 + md 资产拷贝。"""
+    """P3：教程 / 学习文章 / 题库的正文壳页 + md 资产拷贝（TestOps 子站 → testops/ 前缀）。"""
     assets_md = SITE / "assets" / "md"
     jobs = []
-    # 12 篇教程
+    # 12 篇教程（产物进 /testops/docs/tutorials/，md 资产仍在 /assets/md/ 供壳页 fetch）
     for md in sorted((PRODUCT / "docs" / "05-教程").glob("*.md")):
         num = md.name.split("-")[0]
-        jobs.append((f"docs/tutorials/{num}.html", md, f"/assets/md/tutorials/{num}.md",
+        jobs.append((f"testops/docs/tutorials/{num}.html", md, f"/assets/md/tutorials/{num}.md",
                      re.sub(r"^\d+-", "", re.sub(r"\.md$", "", md.name)),
                      TUTORIAL_BLURBS.get(num, "跟着做一遍就能上手的实战教程。"),
-                     "/learn-tutorials.html", "教程目录",
-                     f"{REPO}/tree/main/docs/05-教程"))
+                     "/testops/learn-tutorials.html", "教程目录",
+                     f"{TESTOPS_REPO}/tree/main/docs/05-教程"))
         (assets_md / "tutorials").mkdir(parents=True, exist_ok=True)
         (assets_md / "tutorials" / f"{num}.md").write_text(md.read_text(encoding="utf-8"), encoding="utf-8")
     # learning 文章（aiops / sre-basics）
     # (产品仓源目录, 站点目录, 返回页)：源目录 aiops → 站点目录 testops（品牌统一，D21）
-    for rel, site_rel, back in (("aiops", "testops", "/learn-testops.html"),
-                                ("sre-basics", "sre-basics", "/learn-sre.html")):
+    for rel, site_rel, back in (("aiops", "testops", "/testops/learn-testops.html"),
+                                ("sre-basics", "sre-basics", "/testops/learn-sre.html")):
         (assets_md / "learn" / site_rel).mkdir(parents=True, exist_ok=True)
         for md in sorted((PRODUCT / "learning" / rel).glob("*.md")):
             if md.name == "README.md":
                 continue
             slug = re.sub(r"\.md$", "", md.name)
-            jobs.append((f"learn/{site_rel}/{slug}.html", md, f"/assets/md/learn/{site_rel}/{slug}.md",
-                         re.sub(r"\.md$", "", md.name), _first_para(_fm(md).get("_body", ""))[:90],
-                         back, "学习学院", REPO))
+            title = re.sub(r"\.md$", "", md.name)
+            # 首段可能抽空（正文以标题/引用开头）——回退用标题构造，保证每页描述唯一（G07）
+            blurb = _first_para(_fm(md).get("_body", ""))[:90] or f"{title}——{TESTOPS_BRAND} 学习学院文章。"
+            jobs.append((f"testops/learn/{site_rel}/{slug}.html", md, f"/assets/md/learn/{site_rel}/{slug}.md",
+                         title, blurb,
+                         back, "学习学院", TESTOPS_REPO))
             (assets_md / "learn" / site_rel / f"{slug}.md").write_text(md.read_text(encoding="utf-8"), encoding="utf-8")
     # 面试题库
     qb = PRODUCT / "docs" / "06-面试题库" / "AIOps面试题库.md"
     if qb.exists():
         (assets_md / "learn").mkdir(parents=True, exist_ok=True)
-        # 产品仓 md 只读；站点副本做品牌归一（标题里的产品名 → BRAND）
+        # 产品仓 md 只读；站点副本做品牌归一（标题里的旧品牌 → TESTOPS_BRAND，不是主品牌）
         (assets_md / "learn" / "interview.md").write_text(
-            qb.read_text(encoding="utf-8").replace("AIOps", BRAND), encoding="utf-8")
-        jobs.append(("learn/interview/all.html", qb, "/assets/md/learn/interview.md",
-                     "{{BRAND}} 面试题库（46 题）", "含答案、追问链、踩坑回答与简历话术。",
-                     "/learn-interview.html", "面试题库", REPO))
+            qb.read_text(encoding="utf-8").replace("AIOps", TESTOPS_BRAND), encoding="utf-8")
+        jobs.append(("testops/learn/interview/all.html", qb, "/assets/md/learn/interview.md",
+                     "{{TESTOPS_BRAND}} 面试题库（46 题）", "含答案、追问链、踩坑回答与简历话术。",
+                     "/testops/learn-interview.html", "面试题库", TESTOPS_REPO))
     out = {}
     for rel, md, mdp, title, blurb, back, back_label, origin in jobs:
         out[rel] = (mdp, title, blurb, back, back_label, origin)
@@ -312,10 +326,13 @@ def build(quiet: bool = False) -> dict[str, str]:
     ).hexdigest()[:8]
 
     def brandify(t: str) -> str:
-        """品牌/仓库/评测平台 token 归一：{{BRAND}} / {{REPO}} / {{REPO_CLONE}} / {{EVALDECK_URL}}。"""
+        """品牌/仓库/评测平台 token 归一：主品牌 {{BRAND}}* 与子站 {{TESTOPS_BRAND}}* 两套。"""
         return (t.replace("{{BRAND}}", BRAND)
                  .replace("{{REPO_CLONE}}", REPO_CLONE)
                  .replace("{{REPO}}", REPO)
+                 .replace("{{TESTOPS_REPO_CLONE}}", TESTOPS_REPO_CLONE)
+                 .replace("{{TESTOPS_REPO}}", TESTOPS_REPO)
+                 .replace("{{TESTOPS_BRAND}}", TESTOPS_BRAND)
                  .replace("{{EVALDECK_URL}}", EVALDECK_URL))
 
     def wrap(slug: str, title: str, desc: str, frag: str, nav_active: str | None) -> str:
@@ -350,39 +367,19 @@ def build(quiet: bool = False) -> dict[str, str]:
         frag_p = SRC / "pages" / f"{file}.frag.html"
         if not frag_p.exists():
             frag_p = SRC / "pages" / f"{file}.html"
-        html = layout
-        html = html.replace("{{PRE_CONTENT}}", announce if page.get("pre") else "")
-        # nav 当前页高亮
-        n = nav
-        for key in re.findall(r'data-nav="([^"]+)"', n):
-            n = n.replace(f'data-nav="{key}"',
-                          f'data-nav="{key}" aria-current="page"' if key == slug else f'data-nav="{key}"')
-        html = html.replace("{{NAV}}", n)
-        html = html.replace("{{FOOTER}}", footer)
-        html = html.replace("{{TITLE}}", page["title"])
-        html = html.replace("{{DESC}}", page["desc"])
-        og = (f'<meta property="og:title" content="{page["title"]}">\n'
-              f'  <meta property="og:description" content="{page["desc"]}">\n'
-              f'  <meta property="og:type" content="website">\n'
-              f'  <meta property="og:image" content="{base}/assets/og/og-home.png">\n' if base else
-              f'<meta property="og:title" content="{page["title"]}">\n'
-              f'  <meta property="og:description" content="{page["desc"]}">\n'
-              f'  <meta property="og:type" content="website">\n')
-        html = html.replace("{{OG}}", og)
-        html = html.replace("{{CANONICAL}}", f'<link rel="canonical" href="{base}/{slug if slug != "index" else ""}">\n' if base else "")
-        html = html.replace("{{EXTRA_HEAD}}", page.get("extra_head", ""))
-
         frag = frag_p.read_text(encoding="utf-8")
-        html = wrap(slug, page["title"], page["desc"], frag, page.get("nav_active") or ("index" if slug == "index" else None))
+        # wrap() 是唯一组装路径：布局槽位/OG/canonical/nav 高亮全在 wrap 内完成。
+        html = wrap(slug, page["title"], page["desc"], frag,
+                    page.get("nav_active") or ("index" if slug == "index" else None))
 
-        # JSON-LD（首页 SoftwareApplication）
+        # JSON-LD（首页 SoftwareApplication，CodeFlow 主品牌）
         if slug == "index":
             ld = ('<script type="application/ld+json">\n' +
                   json.dumps({"@context": "https://schema.org", "@type": "SoftwareApplication",
-                              "name": "{{BRAND}} AI 运维监控平台", "applicationCategory": "DeveloperApplication",
-                              "operatingSystem": "Linux, macOS", "softwareVersion": hook_version(),
-                              "license": "https://www.gnu.org/licenses/agpl-3.0",
-                              "description": page["desc"]}, ensure_ascii=False) + "\n</script>")
+                              "name": f"{BRAND} · AI Native 研发交付平台", "applicationCategory": "DeveloperApplication",
+                              "operatingSystem": "Linux, macOS", "softwareVersion": hook_cf_version(),
+                              "license": "https://opensource.org/licenses/MIT",
+                              "description": brandify(page["desc"])}, ensure_ascii=False) + "\n</script>")
             html = html.replace("<link rel=\"stylesheet\"", ld + "\n<link rel=\"stylesheet\"")
 
         out[f"{slug}.html" if slug != "404" else "404.html"] = html
@@ -394,24 +391,50 @@ def build(quiet: bool = False) -> dict[str, str]:
 
 
     # sitemap / robots / llms.txt
-    today = datetime.date.today().isoformat()
+    # lastmod 取源文件（页面片段 / registry）的最近修改时间——不能用 date.today()：
+    # 那会让每次构建的产物都变，G01（幂等）隔天必红。
+    def _lastmod(page: dict) -> str:
+        frag_p = SRC / "pages" / f"{page['file']}.frag.html"
+        if not frag_p.exists():
+            frag_p = SRC / "pages" / f"{page['file']}.html"
+        ts = max(frag_p.stat().st_mtime, (SRC / "pages.json").stat().st_mtime)
+        return datetime.date.fromtimestamp(ts).isoformat()
+
     locs = "\n".join(
         f"  <url><loc>{base or 'https://REPLACE-BEFORE-LAUNCH'}/{p['slug']}.html</loc>"
-        f"<lastmod>{today}</lastmod></url>" for p in reg["pages"] if p["slug"] != "404")
+        f"<lastmod>{_lastmod(p)}</lastmod></url>" for p in reg["pages"] if p["slug"] != "404")
     out["sitemap.xml"] = (f'<?xml version="1.0" encoding="UTF-8"?>\n<!-- base_url 未配置时 loc 为占位，上线前在 pages.json 设置 base_url -->\n'
                           f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{locs}\n</urlset>\n')
     out["robots.txt"] = "User-agent: *\nAllow: /\nSitemap: " + (base or "https://REPLACE-BEFORE-LAUNCH") + "/sitemap.xml\n"
-    out["llms.txt"] = f"""# {BRAND} · AI 运维监控平台
+    cf_pages = [p for p in reg["pages"] if p["slug"] != "404" and not p["slug"].startswith("testops/")]
+    tps_pages = [p for p in reg["pages"] if p["slug"] != "404" and p["slug"].startswith("testops/")]
 
-> 开源自托管的 AI 运维监控平台：拉取式 Agent（零入站端口）、指纹状态机告警、带证据链的 AI 根因诊断、九道护栏下的分级处置。版本 {hook_version()}。
+    def _llm_line(p: dict) -> str:
+        rel = "" if p["slug"] == "index" else p["slug"] + ".html"
+        return f"- [{p['title'].split(' · ')[0]}]({base or ''}/{rel}): {brandify(p['desc'])[:60]}"
 
-## 主要页面
-""" + "\n".join(f"- [{p['title'].split(' · ')[0]}]({base or ''}/{'' if p['slug'] == 'index' else p['slug'] + '.html'}): {p['desc'][:60]}"
-                for p in reg["pages"] if p["slug"] not in ("404",)) + """
+    out["llms.txt"] = f"""# {BRAND} · AI Native 研发交付平台（含 {TESTOPS_BRAND} 智能运维子站）
 
-## 一键部署
+> {BRAND}：需求进、交付出——数字员工按 SDLC 流水线自动完成分析、开发、测试、验证与交接，人只做需求澄清与验收。平台源码 MIT（上游 CodeFlow Community），执行器 runtime 纯标准库、可独立部署。
+> {TESTOPS_BRAND}：开源自托管的 AI 运维监控平台——拉取式 Agent（零入站端口）、指纹状态机告警、带证据链的 AI 根因诊断、九道护栏下的分级处置。版本 {hook_version()}。
+
+## CodeFlow 主要页面
+""" + "\n".join(_llm_line(p) for p in cf_pages) + f"""
+
+## {TESTOPS_BRAND} 子站（/testops/）
+""" + "\n".join(_llm_line(p) for p in tps_pages) + f"""
+
+## 部署（CodeFlow）
 ```bash
-git clone {REPO_CLONE} && cd {BRAND}
+git clone {REPO_CLONE} && cd CodeFlow/platform
+bash build.sh        # 构建应用镜像（源码 Maven 构建）
+bash bootstrap.sh    # 起 MySQL/Redis/MinIO + 应用 + 健康检查
+# 打开 http://localhost:7001/register 注册首个用户
+```
+
+## 部署（{TESTOPS_BRAND}）
+```bash
+git clone {TESTOPS_REPO_CLONE} && cd TestOps
 cp backend/.env.example .env   # 把 JWT_SECRET / KEY_STORE_SECRET / DB_PASSWORD 换成随机值
 docker compose --env-file .env -f deploy/docker-compose.yaml up -d --build
 ```

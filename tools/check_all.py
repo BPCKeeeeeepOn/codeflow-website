@@ -21,7 +21,8 @@ def g(code: str, ok: bool, msg: str = "") -> None:
 
 
 def html_pages() -> list[Path]:
-    return sorted(SITE.glob("*.html"))
+    """全部产物页（含 /testops/ 子站与文档壳页），排除 src/ 源目录。"""
+    return sorted(p for p in SITE.rglob("*.html") if SRC not in p.parents)
 
 
 def all_text() -> str:
@@ -53,7 +54,8 @@ def g04() -> None:
         s = p.read_text(encoding="utf-8")
         ids = set(re.findall(r'id="([^"]+)"', s))
         for a in re.findall(r'href="#([^"]+)"', s):
-            if a and a not in ids:
+            # 跳过 JS 模板串里的动态锚点（壳页 TOC 生成器写入 href="#${h.id}"）
+            if a and "$" not in a and a not in ids:
                 bad.append(f"{p.name}#{a}")
     g("G04", not bad, ", ".join(bad[:5]))
 
@@ -76,8 +78,8 @@ def g05() -> None:
 # ── G06 sitemap = 注册表 ──
 def g06() -> None:
     sm = (SITE / "sitemap.xml").read_text(encoding="utf-8")
-    locs = set(re.findall(r'<loc>[^<]*/([^/<]*\.html)</loc>', sm))
-    reg = {p["slug"] + ".html" for p in PAGES if p["slug"] != "404"}
+    locs = set(re.findall(r'<loc>https?://[^/]*([^<]*\.html)</loc>', sm))
+    reg = {"/" + p["slug"] + ".html" for p in PAGES if p["slug"] != "404"}
     robots = (SITE / "robots.txt").read_text(encoding="utf-8")
     llms = (SITE / "llms.txt").read_text(encoding="utf-8")
     ok = locs == reg and "Sitemap:" in robots and "主要页面" in llms
@@ -153,7 +155,7 @@ def g09() -> None:
 
 # ── G10 诚实标识 ──
 def g10() -> None:
-    vip = (SITE / "vip.html").read_text(encoding="utf-8")
+    vip = (SITE / "testops" / "vip.html").read_text(encoding="utf-8")
     has = ("即将上线" in vip) and ("设计预览" in vip)
     bad = [w for w in ("已上线", "正式发布", "现已支持") if w in vip]
     g("G10", has and not bad, f"缺标识={not has} 违规词={bad}")
@@ -229,15 +231,16 @@ def evaldeck_url() -> str:
 
 def g16() -> None:
     """Agent 评测页 = EvalDeck 全量嵌入（iframe + 品牌加载态 + 四能力标记 + token 已替换）。"""
-    s = (SITE / "agent-community.html").read_text(encoding="utf-8")
+    s = (SITE / "testops" / "agent-community.html").read_text(encoding="utf-8")
+    idx = (SITE / "testops" / "index.html").read_text(encoding="utf-8")
     url = evaldeck_url().rstrip("/")
     checks = [
         ("iframe 嵌入", 'class="eval-embed"' in s and url in s),
         ("品牌加载态", "eval-overlay" in s and "Agent 评测平台" in s),
         ("四能力标记", all(k in s for k in ("Agent-as-a-Judge", "DSL", "实验门禁", "成本"))),
         ("token 已替换", "{{EVALDECK_URL}}" not in s),
-        ("首页 CTA 已更新", "进入评测" in (SITE / "index.html").read_text(encoding="utf-8")),
-        ("首页四能力卡", all(k in (SITE / "index.html").read_text(encoding="utf-8")
+        ("子站首页 CTA 已更新", "进入评测" in idx),
+        ("子站首页四能力卡", all(k in idx
                              for k in ("Agent-as-a-Judge", "轨迹断言 DSL", "实验门禁", "stale 传播"))),
     ]
     bad = [name for name, ok in checks if not ok]
@@ -253,7 +256,9 @@ def g17() -> None:
         "tutorials": len(list((prod / "docs" / "05-教程").glob("*.md"))),
     }
     bad = []
-    for slug, key in (("learn-testops.html", "aiops"), ("learn-sre.html", "sre"), ("learn-tutorials.html", "tutorials")):
+    for slug, key in (("testops/learn-testops.html", "aiops"),
+                      ("testops/learn-sre.html", "sre"),
+                      ("testops/learn-tutorials.html", "tutorials")):
         s = (SITE / slug).read_text(encoding="utf-8")
         n = len(re.findall(r'<div class="learn-card"|<div class="hub-item"', s))
         if n != counts[key]:
@@ -265,13 +270,16 @@ def g17() -> None:
 def g18() -> None:
     prod = Path("/Users/summer/aiops-platform")
     ver = (prod / "VERSION").read_text(encoding="utf-8").strip()
-    about = (SITE / "about.html").read_text(encoding="utf-8")
+    about = (SITE / "testops" / "about.html").read_text(encoding="utf-8")
     ok_v = ver in about
     qs = (prod / "docs" / "04-交付与运营" / "快速开始.md").read_text(encoding="utf-8")
     cmd = re.search(r"```bash\n(.*?)```", qs, re.S).group(1).strip().splitlines()[0]
-    dep = (SITE / "deploy.html").read_text(encoding="utf-8")
+    dep = (SITE / "testops" / "deploy.html").read_text(encoding="utf-8")
     ok_c = cmd.split()[0] in dep and "docker compose" in dep
-    g("G18", ok_v and ok_c, f"版本={ok_v} 命令={ok_c}")
+    # 家族站新增：CodeFlow 自部署页必须含平台构建/启动命令
+    cf_dep = (SITE / "deploy.html").read_text(encoding="utf-8")
+    ok_cf = "bash build.sh" in cf_dep and "bash bootstrap.sh" in cf_dep
+    g("G18", ok_v and ok_c and ok_cf, f"版本={ok_v} 命令={ok_c} codeflow命令={ok_cf}")
 
 
 # ── G19 联系挂件（FR-33）：全页存在 + 二维码资产合规 ──
@@ -311,29 +319,37 @@ def g20() -> None:
     g("G20", not bad, "; ".join(bad[:3]))
 
 
-# ── G21 品牌一致性（D21）：旧品牌名零残留 + 新品牌与仓库地址在场 ──
-BRAND = "TestOps"
-REPO = "https://github.com/qsumm/TestOps"
+# ── G21 品牌一致性（家族站）：旧品牌名零残留 + 双品牌各就各位 ──
+BRAND = "CodeFlow"
+REPO = "https://github.com/qsumm/CodeFlow"
+TESTOPS_BRAND = "TestOps"
+TESTOPS_REPO = "https://github.com/qsumm/TestOps"
 
 def g21() -> None:
     bad = []
-    # 1) 站点产物 + 站点资产（md 副本）零旧品牌名
+    # 1) 站点产物 + 站点资产（md 副本）零历史品牌名（AIOps 是两代以前的旧名，TestOps 仍在用）
     for p in list(SITE.rglob("*.html")) + list((SITE / "assets" / "md").rglob("*.md")):
         n = p.read_text(encoding="utf-8").count("AIOps")
         if n:
             bad.append(f"{p.relative_to(SITE)} 旧品牌×{n}")
-    # 2) 源文件（site/src）零旧品牌名——源里应写 {{BRAND}}/{{REPO}} token
-    for p in list((SRC / "pages").glob("*.html")) + list((SRC / "partials").glob("*.html")) + [SRC / "pages.json"]:
+    # 2) 源文件（site/src 递归）零历史品牌名——源里应写品牌 token
+    for p in list((SRC / "pages").rglob("*.html")) + list((SRC / "partials").glob("*.html")) + [SRC / "pages.json"]:
         n = p.read_text(encoding="utf-8").count("AIOps")
         if n:
-            bad.append(f"src/{p.name} 旧品牌×{n}")
-    # 3) 产物里新品牌与新仓库地址必须在场（防"替换过头"）
+            bad.append(f"src/{p.relative_to(SRC)} 旧品牌×{n}")
+    # 3) 主站首页 = CodeFlow 品牌 + CodeFlow 仓库（防"替换过头"或漏替）
     idx = (SITE / "index.html").read_text(encoding="utf-8")
     if BRAND not in idx:
-        bad.append("首页缺新品牌名")
+        bad.append("首页缺主品牌名 CodeFlow")
     if REPO not in idx:
-        bad.append("首页缺新仓库地址")
-    # 4) 旧仓库地址零残留（qsumm/AIOps 已改名，靠 GitHub 重定向，站内不应再依赖）
+        bad.append("首页缺 CodeFlow 仓库地址")
+    # 4) 子站首页 = TestOps 品牌 + TestOps 仓库
+    tidx = (SITE / "testops" / "index.html").read_text(encoding="utf-8")
+    if TESTOPS_BRAND not in tidx:
+        bad.append("子站首页缺 TestOps 品牌名")
+    if TESTOPS_REPO not in tidx:
+        bad.append("子站首页缺 TestOps 仓库地址")
+    # 5) 旧仓库地址零残留（qsumm/AIOps 已改名，靠 GitHub 重定向，站内不应再依赖）
     for p in list(SITE.rglob("*.html")):
         if "qsumm/AIOps" in p.read_text(encoding="utf-8"):
             bad.append(f"{p.relative_to(SITE)} 旧仓库地址")
@@ -342,9 +358,9 @@ def g21() -> None:
 
 # ── G22 技能卡 = skills/*.md（首页技能集市轨；G16 改判评测嵌入后此锁不撤） ──
 def g22() -> None:
-    """首页技能集市卡数 == skills/*.md 数；抽首尾两张 name/description/命令数逐字段一致。"""
+    """TestOps 子站首页技能集市卡数 == skills/*.md 数；抽首尾两张 name/description/命令数逐字段一致。"""
     mds = sorted((ROOT / "agent-community" / "skills").glob("*.md"))
-    idx = (SITE / "index.html").read_text(encoding="utf-8")
+    idx = (SITE / "testops" / "index.html").read_text(encoding="utf-8")
     n = len(re.findall(r'<div class="skill-card">', idx))
     bad = []
     if n != len(mds):

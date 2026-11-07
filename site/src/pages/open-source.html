@@ -1,53 +1,42 @@
 <div class="wrap">
 <section class="hero" style="padding:64px 0 40px">
-  <span class="eyebrow">开源说明</span>
-  <h1 style="font-size:clamp(1.8rem,3.4vw,2.7rem)">开源包不是主线 dump，<br>是有防线的发布产物。</h1>
-  <p class="lede">你在 GitHub 上看到的每一个开源版本，都经过一条单向发布管道：白名单复制 → 内部文件剥离 → 敏感扫描 → 孤儿快照提交。历史零泄漏是机制保证，不是靠清理。</p>
+  <span class="eyebrow">开源与合规</span>
+  <h1 style="font-size:clamp(1.8rem,3.4vw,2.7rem)">全链路可审计，<br>支撑"数据不出域"的采购门槛。</h1>
+  <p class="lede">CodeFlow 面向金融与央国企等对<strong>可审计、可私有化</strong>有硬要求的场景：平台源码 MIT、克隆即全栈部署；执行器 runtime 纯标准库实现、独立进程、可独立部署。模型账单走客户自己的 API key，不锁定在任何模型的 Credits 体系里。</p>
 </section>
 
-<section class="tight">
-  <div class="sec-head"><div class="sec-kicker">发布管道</div>
-  <h2 style="font-size:1.5rem">三个仓库位，一条单向流</h2></div>
-  <div class="term">
-    <div class="term-bar"><span class="tl"><i></i><i></i><i></i></span><span>同步管道（唯一方向）</span></div>
-    <div class="term-body">
-<div>main（开发真源 · 私有仓：全部历史 + 全部文档）</div>
-<div>  │  git cherry-pick &lt;需要开源的提交&gt;</div>
-<div>  ▼</div>
-<div>opensource-baseline（开源基线分支：AGPL 化 + IP 中性化）</div>
-<div>  │  python3 tools/oss_export.py</div>
-<div>  │    ① 白名单复制   ② 内部文件剥离   ③ 运行时产物忽略</div>
-<div>  │    ④ <span class="w">敏感扫描（30+ 正则，命中即失败，绝不带病导出）</span></div>
-<div>  │    ⑤ 孤儿快照提交（每次导出=全新仓库，零历史泄漏）</div>
-<div>  ▼</div>
-<div>oss 仓库（你看到的：快照替换，force push 是设计行为）</div>
-    </div>
-  </div>
-  <div class="caps" style="margin-top:18px">
-    <div class="cap"><div class="cap-h"><span class="cap-ico">①</span><h3>白名单</h3></div>
-      <p style="font-size:.88rem;color:var(--muted);line-height:1.7">开源包只包含白名单路径：代码、部署、工具、用户手册——商业文档、调研、内部交付资料从一开始就不在复制范围。</p></div>
-    <div class="cap"><div class="cap-h"><span class="cap-ico">②</span><h3>敏感扫描</h3></div>
-      <p style="font-size:.88rem;color:var(--muted);line-height:1.7">密钥形态、公网 IP、个人身份、商业词、他方代号——30+ 条正则，任一命中即拦截。真实拦过两次：漏洞披露文档里的公网 IP、演示地址。词表只增不减。</p></div>
-    <div class="cap"><div class="cap-h"><span class="cap-ico">③</span><h3>孤儿快照</h3></div>
-      <p style="font-size:.88rem;color:var(--muted);line-height:1.7">每次导出都是全新仓库的孤儿提交：没有历史、没有内部文件名、没有"删干净了但 git log 里还有"的风险。</p></div>
+<section class="tight" id="license">
+  <div class="sec-head"><div class="sec-kicker">许可证</div>
+  <h2 style="font-size:1.5rem">平台 MIT，源头可溯</h2></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>组件</th><th>许可与来源</th></tr></thead>
+      <tbody>
+        <tr><td>平台前后端</td><td class="yes">MIT 许可（上游 CodeFlow Community，原始版权声明随分发保留）</td></tr>
+        <tr><td>执行器 runtime</td><td class="yes">纯标准库 Python（≥3.11）实现，独立进程，只通过 WebSocket 协议帧与平台交互</td></tr>
+        <tr><td>第三方组件</td><td class="yes">Spring Boot 2.7 · MyBatis · MySQL 8 · Redis · MinIO/S3 · React + Vite，第三方声明见仓库 THIRD-PARTY-NOTICES</td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
-<section class="tight">
-  <div class="sec-head"><div class="sec-kicker">机制致谢</div>
-  <h2 style="font-size:1.5rem">不装作原创</h2></div>
-  <p style="color:var(--muted);font-size:.95rem;line-height:1.8;max-width:44em">本平台的若干核心机制（指纹状态机、诊断 Agent 循环、终态工具契约）在设计调研中参考了 Apache-2.0 许可的开源项目，逐条出处标注在产品仓库的设计文档中——哪些思想来自谁、我们自己改了什么，都有留痕。</p>
+<section class="tight" id="audit">
+  <div class="sec-head"><div class="sec-kicker">为什么可信</div>
+  <h2 style="font-size:1.5rem">三条工程纪律</h2></div>
+  <ul class="ev-points">
+    <li><span class="k">1</span><span><b>协议公开。</b>调度器与执行器之间只有 WebSocket 协议帧契约（七帧闭环），协议文档与服务端源码完全公开——执行侧行为可审计，不存在闭源黑盒。</span></li>
+    <li><span class="k">2</span><span><b>任务包可校验。</b>身份、技能、记忆、SDLC、队友快照装进任务包，sha256 校验后解压挂载；执行输入可还原、可复现。</span></li>
+    <li><span class="k">3</span><span><b>全程留痕。</b>派发、接棒、审批、回写全链路审计日志到人；交付备注幂等回写，防重复、防篡改。</span></li>
+  </ul>
 </section>
 
-<section class="tight">
-  <div class="sec-head"><div class="sec-kicker">参与</div>
-  <h2 style="font-size:1.5rem">三种贡献方式</h2></div>
+<section class="tight" id="repos">
+  <div class="sec-head"><div class="sec-kicker">仓库</div>
+  <h2 style="font-size:1.5rem">两条产品线，各自开源</h2></div>
   <div class="mini-grid">
-    <div class="mini"><div class="m-t">提 Issue</div><div class="m-d">缺陷、场景建议、技能提案（Agent 评测走专属提案流程）。</div><div class="m-p">Issues</div></div>
-    <div class="mini"><div class="m-t">提 PR</div><div class="m-d">代码 / 文档 / 技能。技能贡献有独立模板与只读命令校验。</div><div class="m-p">Pull Requests</div></div>
-    <div class="mini"><div class="m-t">安全通告</div><div class="m-d">漏洞请走安全通告渠道，不开公开 Issue；修复后致谢（可匿名）。</div><div class="m-p">Security</div></div>
-    <div class="mini"><div class="m-t">行为准则</div><div class="m-d">相互尊重就一条。完整版见仓库 CODE_OF_CONDUCT。</div><div class="m-p">CoC</div></div>
+    <div class="mini"><div class="m-t">CodeFlow · 研发交付</div><div class="m-d">平台前后端 + 执行器 runtime + 工程文档（含禅道闭环 E2E 原始报告）。</div><div class="m-p"><a href="{{REPO}}" target="_blank" rel="noopener" style="color:var(--accent)">github.com/qsumm/CodeFlow →</a></div></div>
+    <div class="mini"><div class="m-t">{{TESTOPS_BRAND}} · 智能运维</div><div class="m-d">AI 运维监控平台，AGPL-3.0 开源：告警收敛、证据链诊断、九道护栏处置。</div><div class="m-p"><a href="{{TESTOPS_REPO}}" target="_blank" rel="noopener" style="color:var(--accent)">github.com/qsumm/{{TESTOPS_BRAND}} →</a></div></div>
   </div>
-  <p style="margin-top:22px"><a class="btn btn-primary" href="{{REPO}}" target="_blank" rel="noopener">前往 GitHub 仓库</a> <a class="btn btn-ghost" href="/agent-community.html" style="margin-left:8px">进入 Agent 评测</a></p>
+  <p style="margin-top:18px"><a class="btn btn-primary" href="/deploy.html">自部署跑起来</a> <a class="btn btn-ghost" href="/testops/open-source.html" style="margin-left:8px">{{TESTOPS_BRAND}} 发布纪律</a></p>
 </section>
 </div>

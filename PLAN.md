@@ -23,7 +23,7 @@
 | 页面组织 | `site/` 下每页一个 HTML，共享 `assets/site.css` + `assets/site.js`（首屏原型拆出公共层） | 多页 SEO 友好，无框架学习成本 |
 | 主题 | 深色默认 + 浅色一等公民（沿用平台令牌，D50 口径） | 已实现并验证 |
 | 内容源 | 设计稿数字全部带出处表（设计稿 §6.1）；**禁用词表**（§6.2）写进发布检查 | 防造假 |
-| 部署目标 | 待定：优先级 Cloudflare Pages（免费+快）> 服务器 nginx（`8.148.155.87` 现有机器可加 vhost）> GitHub Pages（国内访问慢） | P5 决策点，见里程碑 |
+| 部署目标 | **已定（2026-11-07）**：腾讯云 1.15.66.59 nginx :80（裸 IP）；域名/HTTPS/Cloudflare Pages 仍待定（P5 遗留） | 已部分达成 |
 | 敏感扫描 | **发布前强制**：复用产品仓 `oss_export.py` 的 BANNED 词表逻辑（竞品名/公网 IP/密钥/商业词），做成 `tools/sensitive_scan.py` | 官网公开面比 OSS 仓更大 |
 
 ## 3. 站点地图（信息架构，设计稿 §2.1）
@@ -102,6 +102,8 @@
 2. 部署：Cloudflare Pages（推荐，git push 即发）或服务器 nginx vhost
 3. 上线检查清单：域名 DNS / HTTPS / 提交搜索引擎 / GitHub README 与官网互链
 4. **回滚**：上一版本地可一键重发（纯静态天然支持）
+
+> **2026-11-07 进展**：已部署腾讯云 1.15.66.59（nginx :80 → /var/www/testops-site，暂无域名/HTTPS）；同日完成**家族站改造**——主品牌升级 CodeFlow（新首页 + features/delivery/deploy/open-source 四页），TestOps 39 页迁 `/testops/`，13 条旧 URL nginx 301（配置在服务器 `/etc/nginx/default.d/testops-legacy-redirects.conf`，入仓待办）。P5 遗留：域名 / HTTPS / base_url / OG 图重制（仍为 TestOps 视觉）。
 
 ### P6 · 内容运营启动（持续）
 

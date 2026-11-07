@@ -5,12 +5,12 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>部署指南 · TestOps AI 运维监控平台</title>
-<meta name="description" content="Docker 一键部署、私有化内网部署与商业授权三条路径；前置条件、快速开始命令与常见坑（均来自真实部署实测）。">
+<title>自部署指南 · CodeFlow</title>
+<meta name="description" content="平台前后端与执行器 runtime 的自部署命令：单机 4C8G 起步，build.sh / bootstrap.sh 一条命令起全栈，执行器节点 2C2G 即可接入。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e0f11'/%3E%3Cpath d='M5 17h5l3-7 4 13 3-9 2 3h5' stroke='%23f5f5f7' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='25' cy='17' r='2.4' fill='%232383e2'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="/assets/site.css?v=dfd7787a">
-<meta property="og:title" content="部署指南 · TestOps AI 运维监控平台">
-  <meta property="og:description" content="Docker 一键部署、私有化内网部署与商业授权三条路径；前置条件、快速开始命令与常见坑（均来自真实部署实测）。">
+<meta property="og:title" content="自部署指南 · CodeFlow">
+  <meta property="og:description" content="平台前后端与执行器 runtime 的自部署命令：单机 4C8G 起步，build.sh / bootstrap.sh 一条命令起全栈，执行器节点 2C2G 即可接入。">
   <meta property="og:type" content="website">
   <meta property="og:image" content="/assets/og/og-home.jpg">
   <meta property="og:image:width" content="1200">
@@ -27,20 +27,18 @@
           <circle cx="25" cy="17" r="2.6" fill="#2383e2"/>
         </svg>
       </span>
-      <span class="brand-name"><b>TestOps</b> <span>AI 运维监控平台</span></span>
+      <span class="brand-name"><b>CodeFlow</b> <span>AI Native 研发交付</span></span>
     </a>
     <nav class="nav-links">
       <a href="/features.html" data-nav="features">产品</a>
-      <a href="/evidence.html" data-nav="evidence">证据链</a>
-      <a href="/deploy.html" data-nav="deploy">部署</a>
-      <a href="/learn.html" data-nav="learn">学习学院</a>
-      <a href="/agent-community.html" data-nav="agent-community">Agent 评测</a>
-      <a href="/oss-hub.html" data-nav="oss-hub">开源专区</a>
-      <a href="/index.html#faq" data-nav="faq">FAQ</a>
+      <a href="/delivery.html" data-nav="delivery">真实交付</a>
+      <a href="/deploy.html" data-nav="deploy" aria-current="page">部署</a>
+      <a href="/open-source.html" data-nav="open-source">开源</a>
+      <a href="/testops/index.html" data-nav="testops">TestOps 运维</a>
     </nav>
     <div class="nav-spacer"></div>
     <div class="nav-act">
-      <a class="gh-star" href="https://github.com/qsumm/TestOps" target="_blank" rel="noopener">
+      <a class="gh-star" href="https://github.com/qsumm/CodeFlow" target="_blank" rel="noopener">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
         <span>GitHub</span>
       </a>
@@ -51,115 +49,75 @@
     </div>
   </div>
 </header>
+
 <main>
 <div class="wrap">
 <section class="hero" style="padding:64px 0 40px">
-  <span class="eyebrow">部署指南</span>
-  <h1 style="font-size:clamp(1.8rem,3.4vw,2.7rem)">三条路，一条命令起步。</h1>
-  <p class="lede">以下命令与产品仓库《快速开始》逐字一致（构建时自动抽取对账）。首次构建约 3~6 分钟。</p>
+  <span class="eyebrow">自部署指南</span>
+  <h1 style="font-size:clamp(1.8rem,3.4vw,2.7rem)">克隆即部署：<br>两条命令起全栈，执行器节点 2C2G。</h1>
+  <p class="lede">平台前后端与执行器 runtime 全部可自部署。以下命令与开源仓库 README 逐字一致；最低配置单机 <strong>4C8G</strong>（跑全栈），纯执行器节点 <strong>2C2G</strong> 即可。</p>
 </section>
 
-<section class="tight">
-  <div class="sec-head"><div class="sec-kicker">开源路径</div>
-  <h2 style="font-size:1.5rem">Docker Compose 一键部署</h2></div>
-  <div class="term"><div class="term-bar"><span class="tl"><i></i><i></i><i></i></span><span>bash — 快速开始（与产品仓逐字一致）</span></div><div class="term-body"><div># 1. 准备环境变量（可选，不填也能跑）</div>
-<div>cat > .env &lt;&lt;'EOF'</div>
-<div>DB_PASSWORD=</div>
-<div>JWT_SECRET=&lt;随机 48 字节，见下></div>
-<div>KEY_STORE_SECRET=&lt;随机 48 字节，见下></div>
-<div># 想要 AI 功能就填（不填则 AI 功能明确报错，采集/告警/巡检不受影响）</div>
-<div>LLM_BASE_URL=https://api.minimaxi.com/v1</div>
-<div>LLM_API_KEY=sk-...</div>
-<div>LLM_MODEL_MAIN=MiniMax-M3</div>
-<div>LLM_MODEL_FAST=MiniMax-M2.7-highspeed</div>
-<div>EOF</div>
-<div># 生成随机密钥：python -c "import secrets;print(secrets.token_urlsafe(48))"</div>
-<div></div>
-<div># 2. 拉起：数据库 + 平台 + 2 台模拟主机</div>
-<div>#    ⚠ 必须带 --env-file .env：-f 指向子目录时 compose 的项目目录变成 deploy/，</div>
-<div>#      根目录 .env 不会被自动读取，LLM/密钥变量会全为空（实测踩过）</div>
-<div>docker compose --env-file .env -f deploy/docker-compose.yaml up -d --build</div>
-<div>#    ⚠ 拉代码超时是 GitHub 在国内网络的常态（实测三种报错：end of file / 连接超时 / 5 分钟零字节），</div>
-<div>#      重试 2~3 次通常能过；持续不通时用镜像加速：</div>
-<div>#      git clone https://gh-proxy.com/https://github.com/qsumm/TestOPS.git</div>
-<div>#      （第三方加速器仅代理只读 clone，密钥类信息不经过它）</div>
-<div></div>
-<div># 3. 让两台模拟主机接入（D16 起注册强制一次性安装令牌）：</div>
-<div>#    a. 打开 http://127.0.0.1:8848 用 admin / admin123 登录</div>
-<div>#       → 主机管理 → 接入新主机 → 生成安装令牌 **两次**（令牌一次性，两台主机各一枚）</div>
-<div>#    b. 两枚令牌分别写进 .env：</div>
-<div>#         echo 'AIOPS_INSTALL_TOKEN_1=&lt;第1枚>' >> .env   # mock-web-01 用</div>
-<div>#         echo 'AIOPS_INSTALL_TOKEN_2=&lt;第2枚>' >> .env   # mock-db-01 用</div>
-<div>#    c. 重建 agent 容器（不用 --build）：</div>
-<div>#       docker compose --env-file .env -f deploy/docker-compose.yaml up -d</div>
-<div>#    两台 mock 主机即上线并开始每 15s 上报。</div>
-<div></div>
-<div># 4. 种演示数据（7 天历史指标 + 规则 + 历史事件 + 案例卡 + LLM 配置）</div>
-<div>docker compose --env-file .env -f deploy/docker-compose.yaml exec platform \</div>
-<div>    python scripts/seed_demo.py --days 7</div>
-<div></div>
-<div># 5. 打开 http://127.0.0.1:8848 （首登请改密码）</div></div></div>
-  <div class="caps" style="margin-top:18px">
-    <div class="cap"><div class="cap-h"><span class="cap-ico">①</span><h3>前置条件</h3></div>
-      <ul class="cap-list">
-        <li>Linux x86_64/aarch64 或 macOS · Docker 20.10+ 与 Compose v2</li>
-        <li>可用内存 ≥ 4GB（数据库是 OceanBase 系，2GB 勉强）</li>
-        <li>端口 8848 未占用；2891（数据库）只做本机映射，<b>不对外开放</b></li>
-        <li>出站可达 Docker Hub（不可达时用镜像源 build-arg，见下）</li>
-      </ul>
-    </div>
-    <div class="cap"><div class="cap-h"><span class="cap-ico">②</span><h3>安全红线（违反即部署失败）</h3></div>
-      <ul class="cap-list">
-        <li><b>三个默认密钥一个都不许留默认值</b>：JWT_SECRET / KEY_STORE_SECRET / DB_PASSWORD 换成随机值</li>
-        <li>不要在公网开放 2891 端口</li>
-        <li>不要在生产环境执行 deploy/faults/ 下的任何故障注入脚本</li>
-        <li>登录后第一件事改 admin 默认密码</li>
-      </ul>
+<section class="tight" id="platform">
+  <div class="sec-head"><div class="sec-kicker">A · 平台前后端</div>
+  <h2 style="font-size:1.5rem">构建镜像 + 起依赖与应用</h2></div>
+  <div class="term">
+    <div class="term-bar"><span class="tl"><i></i><i></i><i></i></span><span>bash — 平台部署（与开源仓库逐字一致）</span></div>
+    <div class="term-body">
+      <div>cd platform</div>
+      <div>bash build.sh          # 构建应用镜像（源码 Maven 构建，首次约 10–20 分钟）</div>
+      <div>bash bootstrap.sh       # 起 MySQL/Redis/MinIO（自动导入 schema+小队模板）+ 应用 + 桶 + 健康检查</div>
+      <div># 打开 http://localhost:7001/register 注册首个用户（建组织即成为管理员）</div>
     </div>
   </div>
-  <div class="cap" style="margin-top:14px"><div class="cap-h"><span class="cap-ico">③</span><h3>实测常见坑</h3></div>
-    <ul class="cap-list">
-      <li><b>--env-file .env 必须带</b>：compose 项目目录会变成 deploy/，不带则根 .env 读不到，LLM 与密钥全空</li>
-      <li>SeekDB 数据目录是 /var/lib/seekdb（命名卷 seekdb-data）；down -v 会清数据</li>
-      <li>服务器时间不同步会导致告警时间窗错乱，部署前先对时</li>
-      <li>国内拉不动 Docker Hub：--build-arg APT_MIRROR=mirrors.aliyun.com --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple</li>
-      <li>接入被监控机：平台「主机管理 → 接入新主机」复制安装命令；目标机 macOS/Linux + Python ≥3.9，无需开放入站端口；可先跑只读 preflight 自检</li>
-    </ul>
-  </div>
+  <p style="margin-top:12px;font-size:.8rem;color:var(--muted)">密钥说明：platform/runtime.env 由 bootstrap 首次生成（AES 主密钥 / JWT，chmod 600）。已有部署重跑 bootstrap 不会重置密钥；换环境部署会产生新密钥，旧库加密数据不可迁移。</p>
 </section>
 
-<section class="tight">
-  <div class="sec-head"><div class="sec-kicker">演示与验证</div>
-  <h2 style="font-size:1.5rem">灌种子数据，注入一次真实故障</h2></div>
+<section class="tight" id="runtime">
+  <div class="sec-head"><div class="sec-kicker">B · 执行器 runtime</div>
+  <h2 style="font-size:1.5rem">注册执行器，接上你自己的模型通道</h2></div>
+  <div class="term">
+    <div class="term-bar"><span class="tl"><i></i><i></i><i></i></span><span>bash — runtime 接入（与开源仓库逐字一致）</span></div>
+    <div class="term-body">
+      <div>pip install -e .                        # 或直接 python -m runtime.daemon（纯标准库）</div>
+      <div>&nbsp;</div>
+      <div># 1. 注册执行器（在平台 Agents 页找到数字员工 ID 与工作空间 ID）</div>
+      <div>export AINATIVE_BASE_URL=http://localhost:7001</div>
+      <div>export AINATIVE_ADMIN_USER=admin</div>
+      <div>export AINATIVE_ADMIN_PASSWORD=...</div>
+      <div>python scripts/register_executor.py --agent-id 10001 --workspace-id 10000 --out runtime.env --provider claude</div>
+      <div>&nbsp;</div>
+      <div># 2. 补充模型通道（env 文件追加）</div>
+      <div>echo 'AINATIVE_AGENT_CMD=claude' &gt;&gt; runtime.env</div>
+      <div>echo 'ANTHROPIC_BASE_URL=https://&lt;anthropic-compatible-endpoint&gt;' &gt;&gt; runtime.env</div>
+      <div>echo 'ANTHROPIC_AUTH_TOKEN=&lt;your-token&gt;' &gt;&gt; runtime.env</div>
+      <div>echo 'ANTHROPIC_MODEL=&lt;model-id&gt;' &gt;&gt; runtime.env</div>
+      <div>&nbsp;</div>
+      <div># 3. 自检 + 常驻</div>
+      <div>set -a; . ./runtime.env; set +a</div>
+      <div>ainative --check-config &amp;&amp; ainative --once-smoke</div>
+      <div>ainative                                    # 或 python -m runtime.daemon，常驻等待派发</div>
+    </div>
+  </div>
+  <p style="margin-top:12px;font-size:.8rem;color:var(--muted)">约束：同一个 executorId + token 同时只允许一个 daemon 实例（服务端单会话，后来者顶掉先来者）。</p>
+</section>
+
+<section class="tight" id="requirements">
+  <div class="sec-head"><div class="sec-kicker">前置条件</div>
+  <h2 style="font-size:1.5rem">资源与依赖清单</h2></div>
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th>故障注入脚本</th><th>场景</th><th>恢复</th></tr></thead>
+      <thead><tr><th>项</th><th>要求</th></tr></thead>
       <tbody>
-        <tr><td>cpu_spike.sh</td><td>CPU 飙高</td><td class="yes">180s 自动恢复</td></tr>
-        <tr><td>mem_leak.sh</td><td>内存泄漏</td><td class="yes">自动恢复</td></tr>
-        <tr><td>disk_full.sh</td><td>磁盘打满（安全上限内写入）</td><td class="yes">自动恢复</td></tr>
-        <tr><td>probe_fail.sh</td><td>探活失败</td><td class="yes">自动恢复</td></tr>
-        <tr><td>process_hang.sh</td><td>进程假死（running ≠ healthy）</td><td class="yes">自动恢复</td></tr>
+        <tr><td>平台全栈</td><td class="yes">单机 4C8G（Docker + Docker Compose；2G 内存跑不动全栈）</td></tr>
+        <tr><td>执行器节点</td><td class="yes">2C2G 纯 runtime 即可；Python ≥ 3.11</td></tr>
+        <tr><td>平台依赖</td><td class="yes">MySQL 8 · Redis · MinIO/S3（bootstrap 自动拉起）</td></tr>
+        <tr><td>模型通道</td><td class="yes">任意 Anthropic 兼容端点（Claude / MiMo / GLM / Kimi / DeepSeek / 私有模型）</td></tr>
+        <tr><td>工单平台</td><td class="yes">禅道 ZenTao 18.10+（闭环实测版本）；钉钉 / 飞书机器人（可选）</td></tr>
       </tbody>
     </table>
   </div>
-  <p style="margin-top:12px;font-size:.8rem;color:var(--muted)">⚠ 脚本只用于演示环境——它们会真的占满资源，不要在生产机运行。</p>
-</section>
-
-<section class="tight">
-  <div class="sec-head"><div class="sec-kicker">另两条路</div>
-  <h2 style="font-size:1.5rem">私有化与商业授权</h2></div>
-  <div class="deploy">
-    <div class="dcard"><span class="dcard-badge">SELF-HOSTED</span><h3>私有化部署到你的内网</h3>
-      <p class="d-sub">数据不出网 · LLM 可自建（DeepSeek / Qwen / OpenAI 兼容）· License 离线验签</p>
-      <a class="btn btn-ghost btn-sm" href="/about.html">了解要求</a></div>
-    <div class="dcard featured"><span class="dcard-badge open">COMMERCIAL</span><h3>商业版 · 源码 + 护航</h3>
-      <p class="d-sub">含定时任务（VIP）、组织级权限与远程部署指导</p>
-      <a class="btn btn-primary btn-sm" href="/pricing.html">看版本对比</a></div>
-    <div class="dcard"><span class="dcard-badge">TROUBLE</span><h3>部署卡住了？</h3>
-      <p class="d-sub">平台自身排障手册 + 主流程冒烟脚本（可作部署 gate）</p>
-      <a class="btn btn-ghost btn-sm" href="/docs.html">排障手册</a></div>
-  </div>
+  <p style="margin-top:18px"><a class="btn btn-primary" href="https://github.com/qsumm/CodeFlow" target="_blank" rel="noopener">克隆开源仓库</a> <a class="btn btn-ghost" href="/open-source.html" style="margin-left:8px">先看开源与合规</a></p>
 </section>
 </div>
 
@@ -175,41 +133,36 @@
               <circle cx="25" cy="17" r="2.6" fill="#2383e2"/>
             </svg>
           </span>
-          <span class="brand-name"><b>TestOps</b> <span>AI 运维监控平台</span></span>
+          <span class="brand-name"><b>CodeFlow</b> <span>AI Native 研发交付</span></span>
         </a>
-        <p>中小团队的 AI 值班运维。告警响了，AI 已经查完，证据链摆在你面前。</p>
+        <p>需求进、交付出：数字员工按 SDLC 流水线完成研发交付，人只做需求澄清与验收。姊妹产品 TestOps 管 CI 之后的运行时。</p>
         <div class="foot-badges" style="margin-top:16px">
-          <span class="badge">AGPL-3.0</span>
-          <span class="badge">Python 3.11</span>
-          <span class="badge">FastAPI</span>
-          <span class="badge">SeekDB</span>
-          <span class="badge">Vue3 · 免构建</span>
+          <span class="badge">平台 MIT</span>
+          <span class="badge">Spring Boot 2.7</span>
+          <span class="badge">React · Vite</span>
+          <span class="badge">runtime 纯标准库</span>
         </div>
       </div>
       <div class="foot-col">
-        <h4>产品</h4>
-        <a href="/features.html#discover">告警发现</a><a href="/features.html#locate">根因定位</a><a href="/features.html#execute">自动处置</a><a href="/features.html#settle">复盘沉淀</a><a href="/deploy.html">部署上手</a>
+        <h4>CodeFlow</h4>
+        <a href="/features.html">产品能力</a><a href="/delivery.html">真实交付</a><a href="/deploy.html">自部署</a><a href="/open-source.html">开源与合规</a><a href="https://github.com/qsumm/CodeFlow">GitHub 仓库</a>
+      </div>
+      <div class="foot-col">
+        <h4>TestOps 子站</h4>
+        <a href="/testops/index.html">产品总览</a><a href="/testops/features.html">功能详解</a><a href="/testops/evidence.html">证据链</a><a href="/testops/learn.html">学习学院</a><a href="/testops/agent-community.html">Agent 评测</a>
       </div>
       <div class="foot-col">
         <h4>文档</h4>
-        <a href="/docs/tutorials/01.html">快速开始</a><a href="/docs/tutorials/02.html">Agent 接入</a><a href="/docs/tutorials/03.html">告警引擎设计</a><a href="/docs/tutorials/05.html">诊断 Agent 拆解</a><a href="/docs/tutorials/08.html">护栏与处置</a><a href="/docs/tutorials/12.html">运维排障</a>
-      </div>
-      <div class="foot-col">
-        <h4>学习</h4>
-        <a href="/learn-testops.html">AI 机制拆解</a><a href="/learn-sre.html">SRE 基础</a><a href="/learn-tutorials.html">实战教程</a><a href="/learn-interview.html">面试题库</a><a href="/oss-hub.html">开源生态</a>
-      </div>
-      <div class="foot-col">
-        <h4>开源</h4>
-        <a href="https://github.com/qsumm/TestOps">GitHub 仓库</a><a href="https://github.com/qsumm/TestOps/issues">问题反馈</a><a href="/agent-community.html">Agent 评测</a><a href="/about.html#join">安全通告</a><a href="/open-source.html">源码结构</a>
+        <a href="/testops/docs/tutorials/01.html">快速开始</a><a href="/testops/docs/tutorials/02.html">Agent 接入</a><a href="/testops/docs/tutorials/05.html">诊断 Agent 拆解</a><a href="/testops/docs/tutorials/12.html">运维排障</a><a href="/testops/docs.html">文档中心</a>
       </div>
       <div class="foot-col">
         <h4>关于</h4>
-        <a href="/about.html">产品理念</a><a href="/about.html#roadmap">路线图</a><a href="/changelog.html">发版记录</a><a href="/pricing.html">商业授权</a><a href="/vip.html">联系我们</a>
+        <a href="/testops/changelog.html">发版记录</a><a href="/testops/pricing.html">商业授权</a><a href="/testops/about.html#join">安全通告</a><a href="/testops/vip.html">联系我们</a>
       </div>
     </div>
     <div class="foot-bot">
-      <span>© 2026 TestOps Platform · AGPL-3.0 协议开源</span>
-      <span>开放集成：Prometheus · apprise · OpenAI 兼容模型协议 · MCP</span>
+      <span>© 2026 CodeFlow · 平台源码 MIT · TestOps AGPL-3.0 开源</span>
+      <span>开放集成：禅道 · 钉钉 / 飞书 · Anthropic 兼容模型协议 · MCP</span>
     </div>
   </div>
 </footer>

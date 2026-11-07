@@ -5,12 +5,12 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>开源说明 · 发布纪律 · TestOps</title>
-<meta name="description" content="双仓机制与发布管道：白名单、敏感扫描、孤儿快照零历史泄漏——开源包不是主线 dump，是有防线的发布产物。">
+<title>开源与合规 · CodeFlow</title>
+<meta name="description" content="平台源码 MIT（上游 CodeFlow Community），执行器 runtime 纯标准库可独立部署；全链路可审计，支撑数据不出域的私有化采购要求。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e0f11'/%3E%3Cpath d='M5 17h5l3-7 4 13 3-9 2 3h5' stroke='%23f5f5f7' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='25' cy='17' r='2.4' fill='%232383e2'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="/assets/site.css?v=dfd7787a">
-<meta property="og:title" content="开源说明 · 发布纪律 · TestOps">
-  <meta property="og:description" content="双仓机制与发布管道：白名单、敏感扫描、孤儿快照零历史泄漏——开源包不是主线 dump，是有防线的发布产物。">
+<meta property="og:title" content="开源与合规 · CodeFlow">
+  <meta property="og:description" content="平台源码 MIT（上游 CodeFlow Community），执行器 runtime 纯标准库可独立部署；全链路可审计，支撑数据不出域的私有化采购要求。">
   <meta property="og:type" content="website">
   <meta property="og:image" content="/assets/og/og-home.jpg">
   <meta property="og:image:width" content="1200">
@@ -27,20 +27,18 @@
           <circle cx="25" cy="17" r="2.6" fill="#2383e2"/>
         </svg>
       </span>
-      <span class="brand-name"><b>TestOps</b> <span>AI 运维监控平台</span></span>
+      <span class="brand-name"><b>CodeFlow</b> <span>AI Native 研发交付</span></span>
     </a>
     <nav class="nav-links">
       <a href="/features.html" data-nav="features">产品</a>
-      <a href="/evidence.html" data-nav="evidence">证据链</a>
+      <a href="/delivery.html" data-nav="delivery">真实交付</a>
       <a href="/deploy.html" data-nav="deploy">部署</a>
-      <a href="/learn.html" data-nav="learn">学习学院</a>
-      <a href="/agent-community.html" data-nav="agent-community">Agent 评测</a>
-      <a href="/oss-hub.html" data-nav="oss-hub">开源专区</a>
-      <a href="/index.html#faq" data-nav="faq">FAQ</a>
+      <a href="/open-source.html" data-nav="open-source" aria-current="page">开源</a>
+      <a href="/testops/index.html" data-nav="testops">TestOps 运维</a>
     </nav>
     <div class="nav-spacer"></div>
     <div class="nav-act">
-      <a class="gh-star" href="https://github.com/qsumm/TestOps" target="_blank" rel="noopener">
+      <a class="gh-star" href="https://github.com/qsumm/CodeFlow" target="_blank" rel="noopener">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
         <span>GitHub</span>
       </a>
@@ -51,58 +49,48 @@
     </div>
   </div>
 </header>
+
 <main>
 <div class="wrap">
 <section class="hero" style="padding:64px 0 40px">
-  <span class="eyebrow">开源说明</span>
-  <h1 style="font-size:clamp(1.8rem,3.4vw,2.7rem)">开源包不是主线 dump，<br>是有防线的发布产物。</h1>
-  <p class="lede">你在 GitHub 上看到的每一个开源版本，都经过一条单向发布管道：白名单复制 → 内部文件剥离 → 敏感扫描 → 孤儿快照提交。历史零泄漏是机制保证，不是靠清理。</p>
+  <span class="eyebrow">开源与合规</span>
+  <h1 style="font-size:clamp(1.8rem,3.4vw,2.7rem)">全链路可审计，<br>支撑"数据不出域"的采购门槛。</h1>
+  <p class="lede">CodeFlow 面向金融与央国企等对<strong>可审计、可私有化</strong>有硬要求的场景：平台源码 MIT、克隆即全栈部署；执行器 runtime 纯标准库实现、独立进程、可独立部署。模型账单走客户自己的 API key，不锁定在任何模型的 Credits 体系里。</p>
 </section>
 
-<section class="tight">
-  <div class="sec-head"><div class="sec-kicker">发布管道</div>
-  <h2 style="font-size:1.5rem">三个仓库位，一条单向流</h2></div>
-  <div class="term">
-    <div class="term-bar"><span class="tl"><i></i><i></i><i></i></span><span>同步管道（唯一方向）</span></div>
-    <div class="term-body">
-<div>main（开发真源 · 私有仓：全部历史 + 全部文档）</div>
-<div>  │  git cherry-pick &lt;需要开源的提交&gt;</div>
-<div>  ▼</div>
-<div>opensource-baseline（开源基线分支：AGPL 化 + IP 中性化）</div>
-<div>  │  python3 tools/oss_export.py</div>
-<div>  │    ① 白名单复制   ② 内部文件剥离   ③ 运行时产物忽略</div>
-<div>  │    ④ <span class="w">敏感扫描（30+ 正则，命中即失败，绝不带病导出）</span></div>
-<div>  │    ⑤ 孤儿快照提交（每次导出=全新仓库，零历史泄漏）</div>
-<div>  ▼</div>
-<div>oss 仓库（你看到的：快照替换，force push 是设计行为）</div>
-    </div>
-  </div>
-  <div class="caps" style="margin-top:18px">
-    <div class="cap"><div class="cap-h"><span class="cap-ico">①</span><h3>白名单</h3></div>
-      <p style="font-size:.88rem;color:var(--muted);line-height:1.7">开源包只包含白名单路径：代码、部署、工具、用户手册——商业文档、调研、内部交付资料从一开始就不在复制范围。</p></div>
-    <div class="cap"><div class="cap-h"><span class="cap-ico">②</span><h3>敏感扫描</h3></div>
-      <p style="font-size:.88rem;color:var(--muted);line-height:1.7">密钥形态、公网 IP、个人身份、商业词、他方代号——30+ 条正则，任一命中即拦截。真实拦过两次：漏洞披露文档里的公网 IP、演示地址。词表只增不减。</p></div>
-    <div class="cap"><div class="cap-h"><span class="cap-ico">③</span><h3>孤儿快照</h3></div>
-      <p style="font-size:.88rem;color:var(--muted);line-height:1.7">每次导出都是全新仓库的孤儿提交：没有历史、没有内部文件名、没有"删干净了但 git log 里还有"的风险。</p></div>
+<section class="tight" id="license">
+  <div class="sec-head"><div class="sec-kicker">许可证</div>
+  <h2 style="font-size:1.5rem">平台 MIT，源头可溯</h2></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>组件</th><th>许可与来源</th></tr></thead>
+      <tbody>
+        <tr><td>平台前后端</td><td class="yes">MIT 许可（上游 CodeFlow Community，原始版权声明随分发保留）</td></tr>
+        <tr><td>执行器 runtime</td><td class="yes">纯标准库 Python（≥3.11）实现，独立进程，只通过 WebSocket 协议帧与平台交互</td></tr>
+        <tr><td>第三方组件</td><td class="yes">Spring Boot 2.7 · MyBatis · MySQL 8 · Redis · MinIO/S3 · React + Vite，第三方声明见仓库 THIRD-PARTY-NOTICES</td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
-<section class="tight">
-  <div class="sec-head"><div class="sec-kicker">机制致谢</div>
-  <h2 style="font-size:1.5rem">不装作原创</h2></div>
-  <p style="color:var(--muted);font-size:.95rem;line-height:1.8;max-width:44em">本平台的若干核心机制（指纹状态机、诊断 Agent 循环、终态工具契约）在设计调研中参考了 Apache-2.0 许可的开源项目，逐条出处标注在产品仓库的设计文档中——哪些思想来自谁、我们自己改了什么，都有留痕。</p>
+<section class="tight" id="audit">
+  <div class="sec-head"><div class="sec-kicker">为什么可信</div>
+  <h2 style="font-size:1.5rem">三条工程纪律</h2></div>
+  <ul class="ev-points">
+    <li><span class="k">1</span><span><b>协议公开。</b>调度器与执行器之间只有 WebSocket 协议帧契约（七帧闭环），协议文档与服务端源码完全公开——执行侧行为可审计，不存在闭源黑盒。</span></li>
+    <li><span class="k">2</span><span><b>任务包可校验。</b>身份、技能、记忆、SDLC、队友快照装进任务包，sha256 校验后解压挂载；执行输入可还原、可复现。</span></li>
+    <li><span class="k">3</span><span><b>全程留痕。</b>派发、接棒、审批、回写全链路审计日志到人；交付备注幂等回写，防重复、防篡改。</span></li>
+  </ul>
 </section>
 
-<section class="tight">
-  <div class="sec-head"><div class="sec-kicker">参与</div>
-  <h2 style="font-size:1.5rem">三种贡献方式</h2></div>
+<section class="tight" id="repos">
+  <div class="sec-head"><div class="sec-kicker">仓库</div>
+  <h2 style="font-size:1.5rem">两条产品线，各自开源</h2></div>
   <div class="mini-grid">
-    <div class="mini"><div class="m-t">提 Issue</div><div class="m-d">缺陷、场景建议、技能提案（Agent 评测走专属提案流程）。</div><div class="m-p">Issues</div></div>
-    <div class="mini"><div class="m-t">提 PR</div><div class="m-d">代码 / 文档 / 技能。技能贡献有独立模板与只读命令校验。</div><div class="m-p">Pull Requests</div></div>
-    <div class="mini"><div class="m-t">安全通告</div><div class="m-d">漏洞请走安全通告渠道，不开公开 Issue；修复后致谢（可匿名）。</div><div class="m-p">Security</div></div>
-    <div class="mini"><div class="m-t">行为准则</div><div class="m-d">相互尊重就一条。完整版见仓库 CODE_OF_CONDUCT。</div><div class="m-p">CoC</div></div>
+    <div class="mini"><div class="m-t">CodeFlow · 研发交付</div><div class="m-d">平台前后端 + 执行器 runtime + 工程文档（含禅道闭环 E2E 原始报告）。</div><div class="m-p"><a href="https://github.com/qsumm/CodeFlow" target="_blank" rel="noopener" style="color:var(--accent)">github.com/qsumm/CodeFlow →</a></div></div>
+    <div class="mini"><div class="m-t">TestOps · 智能运维</div><div class="m-d">AI 运维监控平台，AGPL-3.0 开源：告警收敛、证据链诊断、九道护栏处置。</div><div class="m-p"><a href="https://github.com/qsumm/TestOps" target="_blank" rel="noopener" style="color:var(--accent)">github.com/qsumm/TestOps →</a></div></div>
   </div>
-  <p style="margin-top:22px"><a class="btn btn-primary" href="https://github.com/qsumm/TestOps" target="_blank" rel="noopener">前往 GitHub 仓库</a> <a class="btn btn-ghost" href="/agent-community.html" style="margin-left:8px">进入 Agent 评测</a></p>
+  <p style="margin-top:18px"><a class="btn btn-primary" href="/deploy.html">自部署跑起来</a> <a class="btn btn-ghost" href="/testops/open-source.html" style="margin-left:8px">TestOps 发布纪律</a></p>
 </section>
 </div>
 
@@ -118,41 +106,36 @@
               <circle cx="25" cy="17" r="2.6" fill="#2383e2"/>
             </svg>
           </span>
-          <span class="brand-name"><b>TestOps</b> <span>AI 运维监控平台</span></span>
+          <span class="brand-name"><b>CodeFlow</b> <span>AI Native 研发交付</span></span>
         </a>
-        <p>中小团队的 AI 值班运维。告警响了，AI 已经查完，证据链摆在你面前。</p>
+        <p>需求进、交付出：数字员工按 SDLC 流水线完成研发交付，人只做需求澄清与验收。姊妹产品 TestOps 管 CI 之后的运行时。</p>
         <div class="foot-badges" style="margin-top:16px">
-          <span class="badge">AGPL-3.0</span>
-          <span class="badge">Python 3.11</span>
-          <span class="badge">FastAPI</span>
-          <span class="badge">SeekDB</span>
-          <span class="badge">Vue3 · 免构建</span>
+          <span class="badge">平台 MIT</span>
+          <span class="badge">Spring Boot 2.7</span>
+          <span class="badge">React · Vite</span>
+          <span class="badge">runtime 纯标准库</span>
         </div>
       </div>
       <div class="foot-col">
-        <h4>产品</h4>
-        <a href="/features.html#discover">告警发现</a><a href="/features.html#locate">根因定位</a><a href="/features.html#execute">自动处置</a><a href="/features.html#settle">复盘沉淀</a><a href="/deploy.html">部署上手</a>
+        <h4>CodeFlow</h4>
+        <a href="/features.html">产品能力</a><a href="/delivery.html">真实交付</a><a href="/deploy.html">自部署</a><a href="/open-source.html">开源与合规</a><a href="https://github.com/qsumm/CodeFlow">GitHub 仓库</a>
+      </div>
+      <div class="foot-col">
+        <h4>TestOps 子站</h4>
+        <a href="/testops/index.html">产品总览</a><a href="/testops/features.html">功能详解</a><a href="/testops/evidence.html">证据链</a><a href="/testops/learn.html">学习学院</a><a href="/testops/agent-community.html">Agent 评测</a>
       </div>
       <div class="foot-col">
         <h4>文档</h4>
-        <a href="/docs/tutorials/01.html">快速开始</a><a href="/docs/tutorials/02.html">Agent 接入</a><a href="/docs/tutorials/03.html">告警引擎设计</a><a href="/docs/tutorials/05.html">诊断 Agent 拆解</a><a href="/docs/tutorials/08.html">护栏与处置</a><a href="/docs/tutorials/12.html">运维排障</a>
-      </div>
-      <div class="foot-col">
-        <h4>学习</h4>
-        <a href="/learn-testops.html">AI 机制拆解</a><a href="/learn-sre.html">SRE 基础</a><a href="/learn-tutorials.html">实战教程</a><a href="/learn-interview.html">面试题库</a><a href="/oss-hub.html">开源生态</a>
-      </div>
-      <div class="foot-col">
-        <h4>开源</h4>
-        <a href="https://github.com/qsumm/TestOps">GitHub 仓库</a><a href="https://github.com/qsumm/TestOps/issues">问题反馈</a><a href="/agent-community.html">Agent 评测</a><a href="/about.html#join">安全通告</a><a href="/open-source.html">源码结构</a>
+        <a href="/testops/docs/tutorials/01.html">快速开始</a><a href="/testops/docs/tutorials/02.html">Agent 接入</a><a href="/testops/docs/tutorials/05.html">诊断 Agent 拆解</a><a href="/testops/docs/tutorials/12.html">运维排障</a><a href="/testops/docs.html">文档中心</a>
       </div>
       <div class="foot-col">
         <h4>关于</h4>
-        <a href="/about.html">产品理念</a><a href="/about.html#roadmap">路线图</a><a href="/changelog.html">发版记录</a><a href="/pricing.html">商业授权</a><a href="/vip.html">联系我们</a>
+        <a href="/testops/changelog.html">发版记录</a><a href="/testops/pricing.html">商业授权</a><a href="/testops/about.html#join">安全通告</a><a href="/testops/vip.html">联系我们</a>
       </div>
     </div>
     <div class="foot-bot">
-      <span>© 2026 TestOps Platform · AGPL-3.0 协议开源</span>
-      <span>开放集成：Prometheus · apprise · OpenAI 兼容模型协议 · MCP</span>
+      <span>© 2026 CodeFlow · 平台源码 MIT · TestOps AGPL-3.0 开源</span>
+      <span>开放集成：禅道 · 钉钉 / 飞书 · Anthropic 兼容模型协议 · MCP</span>
     </div>
   </div>
 </footer>
