@@ -11,7 +11,7 @@
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "CodeFlow · AI Native 研发交付平台", "applicationCategory": "DeveloperApplication", "operatingSystem": "Linux, macOS", "softwareVersion": "1.1.0", "license": "https://opensource.org/licenses/MIT", "description": "AI Native 软件需求交付平台 + 执行器运行时：数字员工按 SDLC 流水线自动完成分析、开发、测试、验证与交接，人只做需求澄清与验收。禅道真实闭环已验证，平台源码 MIT。"}
 </script>
-<link rel="stylesheet" href="/assets/site.css?v=2bc6af54">
+<link rel="stylesheet" href="/assets/site.css?v=6b351065">
 <meta property="og:title" content="CodeFlow · AI Native 研发交付平台 — 需求进，交付出">
   <meta property="og:description" content="AI Native 软件需求交付平台 + 执行器运行时：数字员工按 SDLC 流水线自动完成分析、开发、测试、验证与交接，人只做需求澄清与验收。禅道真实闭环已验证，平台源码 MIT。">
   <meta property="og:type" content="website">
@@ -39,6 +39,7 @@
     <nav class="nav-links">
       <a href="/features.html" data-nav="features">产品</a>
       <a href="/delivery.html" data-nav="delivery">真实交付</a>
+      <a href="/blog.html" data-nav="blog">博客</a>
       <a href="/deploy.html" data-nav="deploy">部署</a>
       <a href="/open-source.html" data-nav="open-source">开源</a>
       <a href="/testops/agent-community.html" data-nav="agent-community">Agent 评测</a>
@@ -59,103 +60,200 @@
 </header>
 
 <main>
-<!-- ═══════ HERO ═══════ -->
+<!-- ═══════ HERO：左文右图 ═══════ -->
 <div class="wrap">
 <section class="hero">
   <div class="hero-grid">
     <div>
-      <span class="eyebrow">平台源码 MIT · 可自部署 · 执行器 runtime 纯标准库</span>
-      <h1>需求进，交付出。</h1>
-      <p class="lede">
-        <strong>CodeFlow</strong> 是 AI Native 软件需求交付平台：数字员工按 <strong>SDLC 流水线</strong>
-        自动完成分析、开发、测试、验证与交接，<strong>人只做需求澄清与验收</strong>。
-        需求从禅道等工单平台自动接入，交付结论带真实代码回写源头——
-        <strong>交付不是纸面文档，是可运行的真实代码。</strong>
-      </p>
+      <span class="eyebrow">平台源码 MIT · 可自部署 · 执行器纯标准库</span>
+      <h1>需求进，交付出。<br>人只做澄清与验收。</h1>
+      <p class="lede">CodeFlow 把需求变成可运行的真实代码：数字员工按 <strong>SDLC 流水线</strong>自动完成分析、开发、测试与交接，交付结论回写你的工单平台。<strong>换需求、换小队、换执行器，进度都在平台上接得住。</strong></p>
       <div class="hero-cta">
-        <a class="btn btn-primary" href="/deploy.html">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M7.25 2.5a.75.75 0 0 1 .75.75V10.4l2.2-2.2a.75.75 0 1 1 1.06 1.06l-3.5 3.5a.75.75 0 0 1-1.06 0l-3.5-3.5a.75.75 0 1 1 1.06-1.06l2.2 2.2V3.25a.75.75 0 0 1 .75-.75Z"/></svg>
-          开始部署
-        </a>
-        <a class="btn btn-ghost" href="/delivery.html">看真实交付记录</a>
-        <a class="btn btn-ghost" href="/testops/index.html">TestOps 运维子站 →</a>
+        <a class="btn btn-primary" href="#start">安装并开始使用</a>
+        <a class="btn btn-ghost" href="/delivery.html">看一次真实交付</a>
       </div>
-      <p class="hero-note"><span class="dot"></span>禅道 18.10+ 已真实闭环 · 钉钉/飞书 @数字员工 即可对话 · 模型账单走自己的 API key</p>
-
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-n">2<small>条</small></div>
-          <div class="stat-l">业务闭环真实系统走通</div>
-          <div class="stat-src">需求开发 + 缺陷修复（禅道 E2E）</div>
-        </div>
-        <div class="stat">
-          <div class="stat-n">11,449<small>例</small></div>
-          <div class="stat-l">测试全绿（后端+前端+runtime）</div>
-          <div class="stat-src">7,670 + 3,738 + 42 · 0 失败</div>
-        </div>
-        <div class="stat">
-          <div class="stat-n">52<small>分钟</small></div>
-          <div class="stat-l">缺陷修复编码实测</div>
-          <div class="stat-src">自建分支 · 交付真实代码 · 回写禅道</div>
-        </div>
-        <div class="stat">
-          <div class="stat-n" id="pv-hero">…</div>
-          <div class="stat-l">本站累计浏览量</div>
-          <div class="stat-src">自建实时统计</div>
-        </div>
-      </div>
+      <p class="hero-note"><span class="dot"></span>本站已被浏览 <b id="pv-hero">…</b> 次 · 自建实时统计</p>
+    </div>
+    <div class="hero-art">
+      <svg viewBox="0 0 560 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CodeFlow 流水线示意：需求工单经分析、编码、测试、交接四个站点，输出携带提交的交付分支" style="width:100%;height:auto;display:block">
+        <!-- 远景：并行的其他泳道（小队并行处理多个工单） -->
+        <line x1="140" y1="330" x2="380" y2="330" stroke="var(--border)" stroke-width="2" opacity="0.55"/>
+        <line x1="170" y1="356" x2="330" y2="356" stroke="var(--border)" stroke-width="2" opacity="0.35"/>
+        <!-- 输入：需求工单卡 -->
+        <g transform="translate(28,185)">
+          <rect x="0" y="0" width="120" height="150" rx="10" fill="var(--surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
+          <rect x="14" y="16" width="58" height="8" rx="4" fill="var(--accent)" opacity="0.85"/>
+          <rect x="14" y="42" width="92" height="6" rx="3" fill="var(--border)"/>
+          <rect x="14" y="58" width="78" height="6" rx="3" fill="var(--border)"/>
+          <rect x="14" y="74" width="88" height="6" rx="3" fill="var(--border)"/>
+          <rect x="14" y="112" width="76" height="22" rx="7" fill="var(--accent-soft)"/>
+          <text x="52" y="127" text-anchor="middle" font-size="10.5" fill="var(--accent)" font-weight="600">需求 #10007</text>
+        </g>
+        <line x1="150" y1="260" x2="196" y2="260" stroke="var(--border-strong)" stroke-width="3"/>
+        <!-- 主轨道：底轨 + 流动虚线 -->
+        <line x1="150" y1="260" x2="470" y2="260" stroke="var(--border-strong)" stroke-width="3"/>
+        <line class="flow" x1="150" y1="260" x2="470" y2="260" stroke="var(--accent)" stroke-width="3" stroke-dasharray="6 16" stroke-linecap="round"/>
+        <!-- 四个站点 -->
+        <g font-size="12.5" fill="var(--muted)" text-anchor="middle">
+          <circle cx="205" cy="260" r="15" fill="var(--surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
+          <circle cx="205" cy="260" r="5" fill="var(--accent-soft)"/>
+          <text x="205" y="297">分析</text>
+          <circle cx="275" cy="260" r="15" fill="var(--surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
+          <circle cx="275" cy="260" r="5" fill="var(--accent)"/>
+          <text x="275" y="297">编码</text>
+          <circle cx="345" cy="260" r="15" fill="var(--surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
+          <circle cx="345" cy="260" r="5" fill="var(--accent-soft)"/>
+          <text x="345" y="297">测试</text>
+          <circle cx="415" cy="260" r="15" fill="var(--surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
+          <circle cx="415" cy="260" r="5" fill="var(--accent-soft)"/>
+          <text x="415" y="297">交接</text>
+        </g>
+        <!-- 输出：交付分支（git 曲线 + 提交点） -->
+        <path d="M 470 260 C 512 260 512 168 548 150" fill="none" stroke="var(--border-strong)" stroke-width="3"/>
+        <path d="M 470 260 C 512 260 512 168 548 150" fill="none" stroke="var(--accent)" stroke-width="3"/>
+        <line x1="470" y1="260" x2="548" y2="260" stroke="var(--border-strong)" stroke-width="2.5" opacity="0.8"/>
+        <circle cx="497" cy="247" r="5" fill="var(--surface)" stroke="var(--accent)" stroke-width="2.5"/>
+        <circle cx="516" cy="205" r="5" fill="var(--surface)" stroke="var(--accent)" stroke-width="2.5"/>
+        <circle cx="536" cy="163" r="5.5" fill="var(--accent)"/>
+        <text x="452" y="150" text-anchor="end" font-size="11.5" fill="var(--accent)" font-family="var(--font-mono)">feat/10007-remember-me</text>
+        <text x="548" y="285" text-anchor="end" font-size="11" fill="var(--muted)" font-family="var(--font-mono)">main</text>
+        <!-- 交付物小卡 -->
+        <g transform="translate(452,52)">
+          <rect x="0" y="0" width="100" height="58" rx="9" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5"/>
+          <rect x="12" y="12" width="52" height="7" rx="3.5" fill="var(--accent)" opacity="0.85"/>
+          <rect x="12" y="28" width="72" height="5" rx="2.5" fill="var(--border)"/>
+          <text x="12" y="48" font-size="10" fill="var(--muted)" font-family="var(--font-mono)">+80 行 · 3 tests</text>
+        </g>
+        <!-- 流水线脉冲 -->
+        <circle r="6" fill="var(--accent)">
+          <animateMotion dur="5s" repeatCount="indefinite" path="M150 260 L470 260" keyPoints="0;1" keyTimes="0;1"/>
+          <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="5s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
     </div>
   </div>
 </section>
 </div>
 
-<!-- ═══════ 交付流水线 ═══════ -->
+<!-- ═══════ 四步快速开始（2×2 等高步骤卡） ═══════ -->
 <div class="wrap">
-<section class="tight" id="pipeline">
-  <div class="sec-head"><div class="sec-kicker">数字员工交付流水线</div>
-  <h2 style="font-size:1.5rem">小队接棒，失败留痕，全链路可重启</h2></div>
-  <div class="mini-grid">
-    <div class="mini"><div class="m-t">① 分析与分支准备</div><div class="m-d">需求澄清对话直接在工单里进行；数字员工经平台 MCP 实时读取工单标题、状态与外部来源后作答与追问。</div></div>
-    <div class="mini"><div class="m-t">② 编码与测试</div><div class="m-d">按 SDLC 模板逐步执行，步骤支持人工审批门禁与"事实不清时询问用户"。</div></div>
-    <div class="mini"><div class="m-t">③ 验证与交付</div><div class="m-d">多角色自动接棒：成功进入下一步，失败按预算重试、attempt 递增、全程留痕。</div></div>
-    <div class="mini"><div class="m-t">④ 交接评审</div><div class="m-d">交付报告经备注通道回写源头工单平台，幂等 marker 防重复回写，人只做验收。</div></div>
+<section class="tight" id="start">
+  <div class="head-row">
+    <div>
+      <div class="sec-kicker">从安装到第一次交付</div>
+      <h2 style="font-size:1.5rem">先起平台，再接执行器，然后派第一个需求。</h2>
+    </div>
+    <a class="btn btn-primary" href="/deploy.html" style="flex:none">按完整指南开始 →</a>
   </div>
-  <p style="margin-top:14px;font-size:.86rem;color:var(--muted)">SDLC 模板可自定义：小队 / 数字员工 / 流程模板 / 仓库与技能都在平台内配置；同一 executorId 单实例运行，后来者顶掉先来者。</p>
+  <div class="step-grid">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h3>起 CodeFlow 平台</h3>
+      <p>准备一台 4C8G 的机器（Docker + Docker Compose），克隆仓库并构建。</p>
+      <code class="barecode">git clone https://github.com/qsumm/CodeFlow.git && cd CodeFlow/platform
+bash build.sh && bash bootstrap.sh</code>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h3>注册首个用户</h3>
+      <p>打开注册页建组织，即成为管理员。</p>
+      <code class="barecode">http://localhost:7001/register</code>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h3>接入执行器</h3>
+      <p>在执行器节点（2C2G 即可）注册 runtime，接上你自己的模型通道。</p>
+      <code class="barecode">python scripts/register_executor.py --agent-id 10001 \
+  --workspace-id 10000 --out runtime.env --provider claude</code>
+    </div>
+    <div class="step-card">
+      <div class="step-num">4</div>
+      <h3>派第一个需求</h3>
+      <p>在工单里指派数字员工，或绑定禅道让需求自动流进来——剩下的交付在平台上看。</p>
+    </div>
+  </div>
+  <p class="foot-note"><b>命令与开源仓库 README 逐字一致。</b>最低配置 4C8G（全栈）/ 2C2G（执行器）。<a href="https://github.com/qsumm/CodeFlow" target="_blank" rel="noopener">查看当前源码</a></p>
 </section>
 </div>
 
-<!-- ═══════ 真实交付证据 ═══════ -->
+<!-- ═══════ 双栏叙事：人做什么 / 数字员工做什么 ═══════ -->
 <div class="wrap">
-<section class="tight" id="delivery">
-  <div class="sec-head"><div class="sec-kicker">凭什么信</div>
-  <h2 style="font-size:1.5rem">一次真实需求，从禅道到可运行代码</h2></div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>环节</th><th>实测结果</th></tr></thead>
-      <tbody>
-        <tr><td>需求接入</td><td class="yes">禅道 story 自动拉取入库 → 指派数字员工 → ≤8 秒派发受理</td></tr>
-        <tr><td>开发执行</td><td class="yes">4 步 SDLC 全过 · 12 分钟跑通（claude CLI + MiMo 模型）</td></tr>
-        <tr><td>交付物</td><td class="yes">4 份步骤文档 + 补丁文件；缺陷修复时自建 git 分支，交付 LoginPage 80 行 + 新建 Service + 3 个测试类</td></tr>
-        <tr><td>结论回写</td><td class="yes">交付备注回写禅道 story/bug，幂等 marker 在位，禅道侧显示集成账号编辑</td></tr>
-        <tr><td>诚实边界</td><td class="yes">坏模型名 40 秒内如实 FAILED 上报；失败交回真人 assignee，不静默吞错</td></tr>
-      </tbody>
-    </table>
+<section class="tight">
+  <div class="sec-head"><div class="sec-kicker">分工</div>
+  <h2 style="font-size:1.5rem">你做决定，数字员工做交付。</h2></div>
+  <div class="step-grid">
+    <div class="step-card">
+      <h3 style="margin-top:0">你只做两件事</h3>
+      <div class="duo-item"><span class="duo-n">01</span><span>澄清需求——在工单里直接与数字员工对话，它经平台 MCP 实时读取工单后作答与追问</span></div>
+      <div class="duo-item"><span class="duo-n">02</span><span>验收交付——看真实代码、测试与交付报告，不通过就退回重跑</span></div>
+    </div>
+    <div class="step-card">
+      <h3 style="margin-top:0">数字员工做其余</h3>
+      <div class="duo-item dim"><span class="duo-n">01</span><span>分析与分支准备</span></div>
+      <div class="duo-item dim"><span class="duo-n">02</span><span>编码与测试（小队自动接棒，失败按预算重试）</span></div>
+      <div class="duo-item dim"><span class="duo-n">03</span><span>验证与交接（git 分支 + 可运行代码）</span></div>
+      <div class="duo-item dim"><span class="duo-n">04</span><span>交付结论回写工单平台（幂等，防重复）</span></div>
+    </div>
   </div>
-  <p style="margin-top:12px;font-size:.8rem;color:var(--muted)">数字来自本地真实系统演练（真实禅道 18.10 + 真实模型通道 + 真实 git 仓库），非演示环境数字。<a href="/delivery.html" style="color:var(--accent)">看完整闭环报告 →</a></p>
+</section>
+</div>
+
+<!-- ═══════ 真实交付一例（叙事） ═══════ -->
+<div class="wrap">
+<section class="tight">
+  <div class="sec-head"><div class="sec-kicker">真实发生的一次交付</div>
+  <h2 style="font-size:1.5rem">一条禅道缺陷，52 分钟后变成一个修复分支。</h2></div>
+  <div class="story-flow">
+    <div>禅道里建了一条 bug：「记住我勾选后刷新页面，勾选状态丢失」。</div>
+    <div>CodeFlow 自动把它拉进平台，指派给数字员工。它澄清了复现路径，自建分支 <code style="font-family:var(--font-mono);font-size:.84rem">feat/10007-remember-me</code>，改了登录页、新建了 RememberMeService，补了 3 个测试类，推送了分支。</div>
+    <div>工单流转到「已关闭」，修复报告自动回写回禅道那条 bug——人只出现在澄清与验收两处。</div>
+  </div>
+  <p style="margin-top:16px"><a class="btn btn-ghost" href="/delivery.html">这条闭环的完整记录 →</a></p>
+</section>
+</div>
+
+<!-- ═══════ 博客 ═══════ -->
+<div class="wrap">
+<section class="tight">
+  <div class="head-row">
+    <div>
+      <div class="sec-kicker">博客</div>
+      <h2 style="font-size:1.5rem">工程实践与交付实录。</h2>
+    </div>
+    <a href="/blog.html" style="color:var(--accent);font-size:.9rem;flex:none">浏览全部文章 →</a>
+  </div>
+  <div class="post-grid">
+      <div class="post-card">
+        <div class="post-meta"><span class="post-cat">交付实录</span><span>2026-11-01</span></div>
+        <h3>一条禅道缺陷，52 分钟后变成一个修复分支</h3>
+        <p class="post-blurb">从 bug 建单到修复分支推送、工单回写关闭的完整过程记录，含一次如实的失败与重派。</p>
+        <a class="post-more" href="/blog/zentao-52min-fix.html">阅读全文 →</a>
+      </div>
+      <div class="post-card">
+        <div class="post-meta"><span class="post-cat">设计决策</span><span>2026-10-27</span></div>
+        <h3>为什么要自研一个开源执行器 runtime</h3>
+        <p class="post-blurb">执行通道被闭源包锁死意味着什么，七帧 WS 协议如何把审计与模型自由拿回来。</p>
+        <a class="post-more" href="/blog/why-open-runtime.html">阅读全文 →</a>
+      </div>
+      <div class="post-card">
+        <div class="post-meta"><span class="post-cat">工程实践</span><span>2026-10-27</span></div>
+        <h3>mock 只能验证管道，真模型才能验证产品</h3>
+        <p class="post-blurb">三个高优先级缺陷全部是真实运行才暴露的——一次测试策略复盘。</p>
+        <a class="post-more" href="/blog/mock-vs-real-model.html">阅读全文 →</a>
+      </div>
+    </div>
 </section>
 </div>
 
 <!-- ═══════ 客户端与模型 ═══════ -->
 <div class="wrap">
-<section class="tight" id="clients">
+<section class="tight">
   <div class="sec-head"><div class="sec-kicker">开放接入</div>
-  <h2 style="font-size:1.5rem">6 种 Agent 客户端开箱即用，模型走自己的 key</h2></div>
-  <p style="margin-bottom:10px">客户端 Provider 可插拔，首批六种直接可用：</p>
-  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px">
+  <h2 style="font-size:1.5rem">6 种 Agent 客户端开箱即用，模型走你自己的 key</h2></div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
     <span class="tag">Claude Code</span><span class="tag">Codex CLI</span><span class="tag">Cursor CLI</span>
     <span class="tag">Gemini CLI</span><span class="tag">Qoder CLI</span><span class="tag">Qoder CLI CN</span>
   </div>
-  <p style="margin-bottom:10px">模型接入任意 Anthropic 兼容端点，<code style="font-family:var(--font-mono);font-size:.82rem">ANTHROPIC_BASE_URL</code> + <code style="font-family:var(--font-mono);font-size:.82rem">ANTHROPIC_AUTH_TOKEN</code> 即接，账单走你自己的 API key：</p>
   <div style="display:flex;flex-wrap:wrap;gap:8px">
     <span class="chip">Claude</span><span class="chip">MiMo</span><span class="chip">GLM</span>
     <span class="chip">Kimi</span><span class="chip">DeepSeek</span><span class="chip">私有模型</span>
@@ -163,18 +261,14 @@
 </section>
 </div>
 
-<!-- ═══════ 双数字员工（联合故事） ═══════ -->
+<!-- ═══════ 双产品（联合故事） ═══════ -->
 <div class="wrap">
-<section class="tight" id="duo">
+<section class="tight">
   <div class="sec-head"><div class="sec-kicker">研发 × 运维</div>
-  <h2 style="font-size:1.5rem">白天的数字员工写代码，晚上的数字员工值班</h2></div>
-  <p style="max-width:52em">CodeFlow 与姊妹产品 <strong>TestOps</strong>（AI 运维监控平台）共享同一套设计语言与工单总线：
-  两者都已原生集成禅道 18.10+。TestOps 的告警诊断可直接沉淀为禅道缺陷工单，
-  CodeFlow 的数字员工拉单修复、交付真实代码、回写闭环——<strong>串接管道在路线图上</strong>，两条产品线今天即可在同一套禅道流程里协作。</p>
-  <div class="mini-grid" style="margin-top:18px">
-    <div class="mini"><div class="m-t">CodeFlow · 研发侧</div><div class="m-d">需求 → 分析 → 编码 → 测试 → 交付回写。适合把"要做的事"变成"做完的事"。</div><div class="m-p"><a href="/features.html" style="color:var(--accent)">看产品能力 →</a></div></div>
-    <div class="mini"><div class="m-t">TestOps · 运维侧</div><div class="m-d">告警收敛 → 证据链诊断 → 护栏处置 → 复盘沉淀。82 秒出带证据链的根因报告，10 分钟告警到恢复。</div><div class="m-p"><a href="/testops/index.html" style="color:var(--accent)">进入子站 →</a></div></div>
-  </div>
+  <h2 style="font-size:1.5rem">白天的数字员工写代码，晚上的值班。</h2></div>
+  <p style="max-width:52em">姊妹产品 <strong>TestOps</strong>（AI 运维监控平台）与 CodeFlow 共享设计语言，都已原生集成禅道：
+  告警沉淀为缺陷工单，数字员工拉单修复、回写闭环——两条产品线今天就能在同一套禅道流程里协作，串接管道在路线图上。</p>
+  <p style="margin-top:16px"><a class="btn btn-ghost" href="/testops/index.html">进入 TestOps 子站 →</a></p>
 </section>
 </div>
 
@@ -182,10 +276,10 @@
 <div class="wrap">
 <section class="final">
   <h2 style="font-size:clamp(1.5rem,3vw,2.1rem)">把下一个需求交给数字员工。</h2>
-  <p style="margin:12px 0 22px;color:var(--muted)">单机 4C8G 即可起全栈；执行器节点 2C2G。克隆即部署，源码可审计。</p>
+  <p style="margin:12px 0 22px;color:var(--muted)">单机 4C8G 起全栈，执行器节点 2C2G。克隆即部署，源码可审计。</p>
   <div class="hero-cta" style="justify-content:center">
-    <a class="btn btn-primary" href="/deploy.html">开始部署</a>
-    <a class="btn btn-ghost" href="/delivery.html">先看真实交付</a>
+    <a class="btn btn-primary" href="#start">安装并开始使用</a>
+    <a class="btn btn-ghost" href="https://github.com/qsumm/CodeFlow" target="_blank" rel="noopener">GitHub 仓库</a>
   </div>
 </section>
 </div>
@@ -242,6 +336,6 @@
   <img src="/assets/wechat-qr.jpg" alt="微信二维码，扫码添加微信号 cloud288" width="132" height="132" loading="lazy">
 </aside>
 
-<script src="/assets/site.js?v=2bc6af54" defer></script>
+<script src="/assets/site.js?v=6b351065" defer></script>
 </body>
 </html>

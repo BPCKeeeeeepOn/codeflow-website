@@ -1,8 +1,8 @@
 <div class="wrap">
 <section class="hero" style="padding:64px 0 40px">
   <span class="eyebrow">真实交付 · 差异化核心</span>
-  <h1 style="font-size:clamp(1.8rem,3.4vw,2.7rem)">交付不是纸面文档，<br>是可运行的真实代码。</h1>
-  <p class="lede">本页记录两条业务闭环在<strong>真实系统</strong>的完整实测：真实禅道 18.10、真实模型通道（claude CLI + MiMo）、真实 git 仓库。执行全部交给平台与数字员工，人只做需求澄清与验收。所有数字可复现，原始报告在开源仓库 docs/18。</p>
+  <h1 style="font-size:clamp(1.8rem,3.4vw,2.7rem)">一条缺陷进来，<br>一个修复分支出去。</h1>
+  <p class="lede">本页记录 CodeFlow 在<strong>真实系统</strong>里的交付记录：真实禅道 18.10、真实模型通道、真实 git 仓库。执行全部交给平台与数字员工，人只做需求澄清与验收。完整原始记录在开源仓库。</p>
 </section>
 
 <section class="tight">
@@ -68,21 +68,5 @@
   </figure>
 </section>
 
-<section class="tight">
-  <div class="sec-head"><div class="sec-kicker">质量基线</div>
-  <h2 style="font-size:1.5rem">11,449 例测试全绿，缺陷在真实运行中暴露并修复</h2></div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>测试域</th><th>规模</th><th>结果</th></tr></thead>
-      <tbody>
-        <tr><td>平台后端</td><td style="font-family:var(--font-mono)">7,670 例</td><td class="yes">0 失败</td></tr>
-        <tr><td>前端</td><td style="font-family:var(--font-mono)">3,738 例</td><td class="yes">全部通过</td></tr>
-        <tr><td>执行器 runtime</td><td style="font-family:var(--font-mono)">42 例</td><td class="yes">全部通过</td></tr>
-        <tr><td>E2E 暴露并修复</td><td>后端 9 处 · 回写通道 1 处 · runtime 2 处 · 前端 3 处</td><td class="yes">全部实测复现后修复</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p style="margin-top:12px;font-size:.8rem;color:var(--muted)">测试策略：mock 只能验证管道，真模型才能验证产品——三个高优先级缺陷全部是真实运行才暴露的。双角色小队自动接棒实测通过，失败工单自动交回真人 assignee。</p>
-  <p style="margin-top:18px"><a class="btn btn-primary" href="/deploy.html">部署跑一遍</a> <a class="btn btn-ghost" href="{{REPO}}" target="_blank" rel="noopener" style="margin-left:8px">看开源仓库原始报告</a></p>
-</section>
+  <p style="margin-top:18px"><a class="btn btn-primary" href="/deploy.html">部署跑一遍</a> <a class="btn btn-ghost" href="{{REPO}}" target="_blank" rel="noopener" style="margin-left:8px">看开源仓库原始记录</a></p>
 </div>

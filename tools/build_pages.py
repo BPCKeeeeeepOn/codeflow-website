@@ -306,7 +306,52 @@ HOOKS = {
     "DEPLOY_COMMANDS": hook_deploy_commands,
     "VERSION": hook_version,
     "CHANGELOG_ROWS": hook_changelog_rows,
+    "BLOG_CARDS": lambda: hook_blog_cards(),
 }
+
+# ── 博客：单一事实源（文章正文在 site/src/blog/{slug}.md） ──
+BLOG_POSTS = [
+    {"slug": "zentao-52min-fix", "cat": "交付实录", "date": "2026-11-01",
+     "title": "一条禅道缺陷，52 分钟后变成一个修复分支",
+     "blurb": "从 bug 建单到修复分支推送、工单回写关闭的完整过程记录，含一次如实的失败与重派。"},
+    {"slug": "why-open-runtime", "cat": "设计决策", "date": "2026-10-27",
+     "title": "为什么要自研一个开源执行器 runtime",
+     "blurb": "执行通道被闭源包锁死意味着什么，七帧 WS 协议如何把审计与模型自由拿回来。"},
+    {"slug": "mock-vs-real-model", "cat": "工程实践", "date": "2026-10-27",
+     "title": "mock 只能验证管道，真模型才能验证产品",
+     "blurb": "三个高优先级缺陷全部是真实运行才暴露的——一次测试策略复盘。"},
+]
+
+
+def hook_blog_cards() -> str:
+    """博客文章卡（首页与博客索引页共用）。"""
+    cards = []
+    for p in BLOG_POSTS:
+        cards.append(f"""      <div class="post-card">
+        <div class="post-meta"><span class="post-cat">{p['cat']}</span><span>{p['date']}</span></div>
+        <h3>{p['title']}</h3>
+        <p class="post-blurb">{p['blurb']}</p>
+        <a class="post-more" href="/blog/{p['slug']}.html">阅读全文 →</a>
+      </div>""")
+    return '<div class="post-grid">\n' + "\n".join(cards) + "\n    </div>"
+
+
+def build_blog_pages() -> list[tuple]:
+    """博客正文数据：md 拷贝 + 壳页片段（wrap 在 build() 内完成，那里才有布局闭包）。"""
+    bdir = SRC / "blog"
+    assets_md = SITE / "assets" / "md" / "blog"
+    assets_md.mkdir(parents=True, exist_ok=True)
+    jobs = []
+    for p in BLOG_POSTS:
+        md = bdir / f"{p['slug']}.md"
+        if not md.exists():
+            continue
+        (assets_md / f"{p['slug']}.md").write_text(md.read_text(encoding="utf-8"), encoding="utf-8")
+        shell = DOC_SHELL.format(md=f"/assets/md/blog/{p['slug']}.md", title=p["title"],
+                                 blurb=f"{p['cat']} · {p['date']} — {p['blurb']}",
+                                 back="/blog.html", back_label="博客", origin=REPO)
+        jobs.append((f"blog/{p['slug']}.html", p, shell))
+    return jobs
 
 # ───────────────────────── 生成 ─────────────────────────
 
@@ -388,6 +433,11 @@ def build(quiet: bool = False) -> dict[str, str]:
         shell = DOC_SHELL.format(md=mdp, title=title, blurb=blurb, back=back,
                                  back_label=back_label, origin=origin)
         out[rel] = wrap(rel.replace("/", "-").replace(".html", ""), title, blurb, shell, None)
+
+    # 博客正文：必须过 wrap()——布局槽位/nav/页脚/挂件/OG 全在里面，裸 shell 会挂 G03/G07/G19
+    for rel, p, shell in build_blog_pages():
+        out[rel] = wrap(f"blog-{p['slug']}", p["title"],
+                        f"{p['cat']} · {p['date']} — {p['blurb']}", shell, "blog")
 
 
     # sitemap / robots / llms.txt

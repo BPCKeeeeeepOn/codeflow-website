@@ -12,6 +12,11 @@ SITE = ROOT / "site"
 SRC = SITE / "src"
 REG = json.loads((SRC / "pages.json").read_text(encoding="utf-8"))
 PAGES = REG["pages"]
+# 博客正文 slug 与生成器 BLOG_POSTS 对账（防两处漂移）
+import re as _re
+BLOG_SLUGS = _re.findall(r'"slug":\s*"([^"]+)"',
+                         _re.search(r"BLOG_POSTS = \[.*?\]",
+                                    (ROOT / "tools" / "build_pages.py").read_text(encoding="utf-8"), _re.S).group(0))
 
 results: list[tuple[str, bool, str]] = []
 
@@ -384,11 +389,12 @@ def g22() -> None:
     g("G22", not bad, "; ".join(bad[:4]))
 
 
-# ── G23 浏览量统计接线（自建计数服务，零第三方脚本） ──
+# ── G23 家族站接线：浏览量统计 + 流水线主视觉 + 博客（全部自建，零第三方脚本） ──
 def g23() -> None:
     bad = []
     idx = (SITE / "index.html").read_text(encoding="utf-8")
     js = (SITE / "assets" / "site.js").read_text(encoding="utf-8")
+    blog = (SITE / "blog.html").read_text(encoding="utf-8")
     if 'id="pv-total"' not in idx:
         bad.append("页脚缺计数展示位")
     if 'id="pv-hero"' not in idx:
@@ -397,6 +403,13 @@ def g23() -> None:
         bad.append("访客口径已下线，不允许残留展示位")
     if "/api/counter/hit" not in js:
         bad.append("site.js 缺计数上报")
+    if 'aria-label="CodeFlow 流水线示意' not in idx:
+        bad.append("首页缺流水线主视觉 SVG")
+    if "/blog/" not in blog or blog.count('class="post-card"') < 3:
+        bad.append("博客索引缺文章卡")
+    for p in BLOG_SLUGS:
+        if not (SITE / "blog" / f"{p}.html").exists():
+            bad.append(f"博客正文缺失:{p}")
     g("G23", not bad, "; ".join(bad))
 
 
