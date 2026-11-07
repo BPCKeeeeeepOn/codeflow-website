@@ -644,3 +644,7 @@ footer{border-top:1px solid var(--border);padding:52px 0 34px;background:var(--c
 .pv-label{font-size:.75rem;color:var(--muted);letter-spacing:.06em}
 .pv-num{font-family:var(--font-mono);font-size:.88rem;font-weight:620;color:var(--text);
   font-variant-numeric:tabular-nums;line-height:1}
+
+/* hero 元信息行：浏览量徽章 + 定位眉标同行，消除双胶囊堆叠 */
+.hero-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.hero-grid{align-items:center}

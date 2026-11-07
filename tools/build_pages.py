@@ -312,7 +312,7 @@ HOOKS = {
 # ── 博客：单一事实源（文章正文在 site/src/blog/{slug}.md） ──
 BLOG_POSTS = [
     {"slug": "zentao-52min-fix", "cat": "交付实录", "date": "2026-11-01",
-     "title": "一条禅道缺陷，52 分钟后变成一个修复分支",
+     "title": "一条缺陷工单，52 分钟后变成一个修复分支",
      "blurb": "从 bug 建单到修复分支推送、工单回写关闭的完整过程记录，含一次如实的失败与重派。"},
     {"slug": "why-open-runtime", "cat": "设计决策", "date": "2026-10-27",
      "title": "为什么要自研一个开源执行器 runtime",
