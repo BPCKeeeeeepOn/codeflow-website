@@ -21,8 +21,8 @@
 </head>
 <body>
 <div class="announce">
-  <b>真实交付闭环已验证</b> · 需求开发与缺陷修复在真实系统走通，数字员工自建分支交付可运行代码
-  <a href="/delivery.html">看实测报告 →</a>
+  <b>v1.1.0 已发布</b> · 数字员工按 SDLC 流水线交付：需求进、交付出，人只做澄清与验收
+  <a href="/features.html">看产品能力 →</a>
 </div>
 
 <header class="nav">
@@ -38,7 +38,6 @@
     </a>
     <nav class="nav-links">
       <a href="/features.html" data-nav="features">产品</a>
-      <a href="/delivery.html" data-nav="delivery">真实交付</a>
       <a href="/blog.html" data-nav="blog">博客</a>
       <a href="/deploy.html" data-nav="deploy">部署</a>
       <a href="/open-source.html" data-nav="open-source">开源</a>
@@ -79,7 +78,7 @@
       <p class="lede">CodeFlow 把需求变成可运行的真实代码：数字员工按 <strong>SDLC 流水线</strong>自动完成分析、开发、测试与交接，交付结论回写你的工单平台。<strong>换需求、换小队、换执行器，进度都在平台上接得住。</strong></p>
       <div class="hero-cta">
         <a class="btn btn-primary" href="#start">安装并开始使用</a>
-        <a class="btn btn-ghost" href="/delivery.html">看一次真实交付</a>
+        <a class="btn btn-ghost" href="/features.html">了解产品能力</a>
       </div>
     </div>
     <div class="hero-art">
@@ -203,20 +202,6 @@ bash build.sh && bash bootstrap.sh</code>
       <div class="duo-item dim"><span class="duo-n">04</span><span>交付结论回写工单平台（幂等，防重复）</span></div>
     </div>
   </div>
-</section>
-</div>
-
-<!-- ═══════ 真实交付一例（叙事） ═══════ -->
-<div class="wrap">
-<section class="tight">
-  <div class="sec-head"><div class="sec-kicker">真实发生的一次交付</div>
-  <h2 style="font-size:1.5rem">一条缺陷工单，52 分钟后变成一个修复分支。</h2></div>
-  <div class="story-flow">
-    <div>源头工单平台里建了一条 bug：「记住我勾选后刷新页面，勾选状态丢失」。</div>
-    <div>CodeFlow 自动把它拉进平台，指派给数字员工。它澄清了复现路径，自建分支 <code style="font-family:var(--font-mono);font-size:.84rem">feat/10007-remember-me</code>，改了登录页、新建了 RememberMeService，补了 3 个测试类，推送了分支。</div>
-    <div>工单流转到「已关闭」，修复报告自动回写回源头那条 bug——人只出现在澄清与验收两处。</div>
-  </div>
-  <p style="margin-top:16px"><a class="btn btn-ghost" href="/delivery.html">这条闭环的完整记录 →</a></p>
 </section>
 </div>
 
